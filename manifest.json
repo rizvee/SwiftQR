@@ -1,0 +1,18 @@
+{
+  "name": "SwiftQR 3D Studio",
+  "short_name": "SwiftQR",
+  "description": "Professional-grade 3D Glassmorphism QR design station. Generate, style, and export QR codes.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#010409",
+  "theme_color": "#312e81",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
