@@ -2,36 +2,52 @@
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
-    <title>SwiftQR_3D | High-Fidelity Glassmorphism QR Studio</title>
-    <meta name="description" content="Professional-grade 3D Glassmorphism QR design station. Generate, style, and export QR codes for URL, WiFi, vCard & WhatsApp.">
-    <meta name="theme-color" content="#312e81">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon.svg" type="image/svg+xml">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SwiftQR">
-    <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"SoftwareApplication","name":"SwiftQR 3D Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web Browser","description":"Professional-grade 3D Glassmorphism QR design station.","author":{"@type":"Person","name":"Hasan Rizvee","url":"https://rizvee.github.io"}}
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftQR 3D Studio — Advanced QR Design Station</title>
+    <meta name="description" content="Generate and style professional 3D Glassmorphism QR codes with custom eyes, logo masking, and vCard social profile embedding.">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: { extend: { colors: { zinc: { 950: '#030712' }, primary: '#ffffff' }, fontFamily: { sans: ['Outfit','Inter','sans-serif'], mono: ['JetBrains Mono','monospace'] } } }
+            theme: {
+                extend: {
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.03)',
+                        'glass-border': 'rgba(255, 255, 255, 0.08)'
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '2.5rem'
+                    }
+                }
+            }
         }
     </script>
+    
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#312e81">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js" defer></script>
-    <script src="https://unpkg.com/lucide@latest" defer></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    </style>
 </head>
-<body class="bg-zinc-950 text-white/80 font-sans min-h-screen overflow-x-hidden selection:bg-white/20 selection:text-white">
+<body class="overflow-x-hidden selection:bg-indigo-500/30">
 
-    <!-- Animated Mesh Background -->
+    <!-- ─── Background Layer ─── -->
     <div class="mesh-container">
         <div class="mesh-blob blob-1"></div>
         <div class="mesh-blob blob-2"></div>
@@ -39,520 +55,574 @@
         <div class="mesh-blob blob-4"></div>
     </div>
 
-    <!-- Main App Wrapper -->
-    <div class="flex min-h-screen p-4 lg:p-8 gap-8 relative z-10">
-
-        <!-- Sidebar Navigation -->
-        <aside class="glass-sidebar w-20 lg:w-24 shrink-0 flex flex-col items-center py-10 gap-10 rounded-[2.5rem]">
-            <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center border-t border-white/20 shadow-xl">
-                <i data-lucide="qr-code" class="text-white w-6 h-6 stroke-[2.5]"></i>
+    <!-- ─── Main Interface ─── -->
+    <div class="relative z-10 min-h-screen flex flex-col pt-6 lg:pt-0">
+        
+        <!-- Header -->
+        <header class="px-6 lg:px-12 flex items-center justify-between h-20 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 glass">
+                    <img src="icon.svg" class="w-6 h-6" alt="Logo">
+                </div>
+                <h1 class="text-lg font-extrabold tracking-tighter text-white uppercase italic">
+                    Swift<span class="text-indigo-400">QR</span> <span class="text-[10px] font-black text-white/20 tracking-widest pl-2">3D_STUDIO</span>
+                </h1>
             </div>
-            <nav class="flex flex-col gap-4 w-full px-3">
-                <button data-tab="url" class="tab-btn active w-full aspect-square rounded-[1.5rem] flex items-center justify-center transition-all duration-300 relative group" title="URL">
-                    <i data-lucide="link" class="w-[22px] h-[22px] group-hover:scale-110 transition-transform"></i>
-                    <span class="absolute left-full ml-4 px-3 py-1 bg-white text-black text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">URL_GEN</span>
-                </button>
-                <button data-tab="wifi" class="tab-btn w-full aspect-square rounded-[1.5rem] flex items-center justify-center transition-all duration-300 relative group" title="WiFi">
-                    <i data-lucide="wifi" class="w-[22px] h-[22px] group-hover:scale-110 transition-transform"></i>
-                    <span class="absolute left-full ml-4 px-3 py-1 bg-white text-black text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">WIFI_LINK</span>
-                </button>
-                <button data-tab="vcard" class="tab-btn w-full aspect-square rounded-[1.5rem] flex items-center justify-center transition-all duration-300 relative group" title="vCard">
-                    <i data-lucide="user-plus" class="w-[22px] h-[22px] group-hover:scale-110 transition-transform"></i>
-                    <span class="absolute left-full ml-4 px-3 py-1 bg-white text-black text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">VCARD_DATA</span>
-                </button>
-                <button data-tab="whatsapp" class="tab-btn w-full aspect-square rounded-[1.5rem] flex items-center justify-center transition-all duration-300 relative group" title="WhatsApp">
-                    <i data-lucide="message-square" class="w-[22px] h-[22px] group-hover:scale-110 transition-transform"></i>
-                    <span class="absolute left-full ml-4 px-3 py-1 bg-white text-black text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">WA_DIRECT</span>
-                </button>
-            </nav>
-            <button id="reset-btn" class="mt-auto w-12 h-12 rounded-2xl flex items-center justify-center text-red-400/60 hover:text-red-400 hover:bg-white/5 transition-all">
-                <i data-lucide="refresh-ccw" class="w-5 h-5 stroke-[2.5]"></i>
-            </button>
-        </aside>
-
-        <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col gap-8 h-full">
-
-            <!-- Header -->
-            <header class="flex items-center justify-between px-2">
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight text-white mb-1">Studio_Dashboard</h1>
-                    <p class="text-white/40 text-sm font-medium tracking-wide">3D_GLASS_GENERATION_PROTOCOL v3.0</p>
+            
+            <div class="flex items-center gap-6">
+                <!-- Theme Toggle -->
+                <div id="theme-toggle" class="theme-switch">
+                    <div class="theme-dot">🌙</div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <!-- Dark / Light Theme Switch -->
-                    <div class="flex items-center gap-3">
-                        <span class="text-[9px] font-mono text-white/30 tracking-widest uppercase">🌙</span>
-                        <button id="theme-toggle" class="theme-switch" title="Toggle Dark / Light Mode" aria-label="Toggle theme">
-                            <div class="theme-dot">🌙</div>
-                        </button>
-                        <span class="text-[9px] font-mono text-white/30 tracking-widest uppercase">☀️</span>
+                
+                <button class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 glass hover:bg-white/10 transition-all">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-white/60 tracking-widest uppercase">Live_Station</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col lg:flex-row gap-6 p-6 lg:p-12 lg:pt-2 max-w-[1920px] mx-auto w-full">
+            
+            <!-- ─── Left Panel: Navigation & Controls ─── -->
+            <aside class="lg:w-24 flex lg:flex-col gap-4 order-2 lg:order-1">
+                <nav class="glass-sidebar flex-1 flex lg:flex-col p-3 rounded-3xl lg:rounded-5xl items-center justify-between lg:justify-start gap-4">
+                    <button class="tab-btn active w-14 h-14 rounded-2xl transition-all" data-tab="url">
+                        <i data-lucide="link-2" class="w-6 h-6"></i>
+                    </button>
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="wifi">
+                        <i data-lucide="wifi" class="w-6 h-6"></i>
+                    </button>
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="vcard">
+                        <i data-lucide="contact" class="w-6 h-6"></i>
+                    </button>
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="whatsapp">
+                        <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    </button>
+                    <div class="lg:mt-auto hidden lg:block">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white/5 opacity-50">
+                            <i data-lucide="fingerprint" class="w-6 h-6"></i>
+                        </div>
                     </div>
-                    <div class="px-4 py-2 bg-white/5 rounded-2xl border-t border-white/10 text-[10px] font-mono tracking-widest text-white/50">
-                        STATUS: <span class="text-green-400">ACTIVE_LINK</span>
+                </nav>
+            </aside>
+
+            <!-- ─── Center Panel: Form Fields ─── -->
+            <section class="flex-1 min-w-0 order-3 lg:order-2">
+                <div class="glass-card rounded-5xl p-8 lg:p-12 h-fit mb-6">
+                    
+                    <!-- URL Content -->
+                    <div id="url-content" class="tab-content transition-all duration-500">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-white tracking-widest uppercase mb-0.5">Dynamic URL</h2>
+                                <p class="text-[10px] text-white/40 tracking-wider">Encode links, deep-links or social pages</p>
+                            </div>
+                        </div>
+                        <input type="url" id="input-url" placeholder="https://your-amazing-link.com" 
+                            class="glass-input w-full p-6 h-20 rounded-3xl text-lg font-medium">
                     </div>
-                </div>
-            </header>
 
-            <!-- Card Layout -->
-            <div class="flex-1 grid lg:grid-cols-[1fr_420px] gap-8 auto-rows-fr">
+                    <!-- WiFi Content -->
+                    <div id="wifi-content" class="tab-content hidden transition-all duration-500">
+                         <div class="flex items-center gap-4 mb-8">
+                            <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                                <i data-lucide="wifi" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-white tracking-widest uppercase mb-0.5">WiFi Network</h2>
+                                <p class="text-[10px] text-white/40 tracking-wider">Fast scan-to-connect credentials</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <label class="text-[9px] font-black text-white/30 tracking-[0.2em] uppercase pl-4">Network SSID</label>
+                                <input type="text" id="wifi-ssid" placeholder="Home_Base_2.4G" class="glass-input w-full p-5 rounded-2xl">
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[9px] font-black text-white/30 tracking-[0.2em] uppercase pl-4">Security</label>
+                                <select id="wifi-enc" class="glass-input w-full p-5 rounded-2xl h-[62px]">
+                                    <option value="WPA">WPA/WPA2</option>
+                                    <option value="WEP">WEP</option>
+                                    <option value="nopass">None</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2 space-y-3">
+                                <label class="text-[9px] font-black text-white/30 tracking-[0.2em] uppercase pl-4">Password</label>
+                                <input type="password" id="wifi-pass" placeholder="••••••••••••" class="glass-input w-full p-5 rounded-2xl">
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Config Card -->
-                <section class="glass-card flex flex-col p-8 lg:p-10 rounded-[3rem]">
-                    <div class="flex-1 space-y-12 overflow-y-auto pr-4 custom-scrollbar">
+                    <!-- vCard Content -->
+                    <div id="vcard-content" class="tab-content hidden transition-all duration-500">
+                        <div class="flex items-center justify-between mb-8">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                                    <i data-lucide="user" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-sm font-bold text-white tracking-widest uppercase mb-0.5">Advanced vCard</h2>
+                                    <p class="text-[10px] text-white/40 tracking-wider italic">Social Link Bundle Supported</p>
+                                </div>
+                            </div>
+                            <!-- Counter Badge -->
+                            <div id="vcard-badge" class="hidden flex items-center gap-3 glass bg-white/5 border border-white/10 px-4 py-2 rounded-2xl animate-pulse">
+                                <div class="w-2 h-2 rounded-full bg-indigo-400"></div>
+                                <span id="vcard-counter" class="text-[10px] font-mono text-white/60 tracking-tighter">0_CHAR</span>
+                            </div>
+                        </div>
 
-                        <!-- Tab Content -->
-                        <div id="tab-content-container">
+                        <!-- Density Warning -->
+                        <div id="high-density-alert" class="hidden density-alert mb-8">
+                            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                            <div class="alert-text">High-Density Mode: Image included. ERROR_CORRECTION set to 'HIGH' automatically.</div>
+                        </div>
 
-                            <!-- URL -->
-                            <div id="url-content" class="tab-content space-y-4">
-                                <label for="input-url" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Destination_URI</label>
-                                <input type="url" id="input-url" placeholder="https://cloud.matrix.io" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="URL Destination">
+                        <div class="space-y-10">
+                            <!-- Photo + Primary Info -->
+                            <div class="flex flex-col md:flex-row gap-8 items-start">
+                                <div class="relative group">
+                                    <div id="profile-avatar-wrap" class="profile-avatar-wrap outline outline-offset-4 outline-white/5 transition-all group-hover:outline-indigo-500/30">
+                                        <div id="profile-avatar-placeholder" class="text-white/20">
+                                            <i data-lucide="camera" class="w-8 h-8"></i>
+                                        </div>
+                                        <img id="profile-avatar-img" src="" class="hidden">
+                                    </div>
+                                    <input type="file" id="profile-photo-upload" class="hidden" accept="image/*">
+                                    <button onclick="document.getElementById('profile-photo-upload').click()" 
+                                        class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white shadow-xl hover:scale-110 active:scale-95 transition-all">
+                                        <i data-lucide="plus" class="w-4 h-4"></i>
+                                    </button>
+                                    <button id="clear-profile-photo" class="hidden absolute -top-2 -right-2 w-7 h-7 rounded-full bg-red-500/80 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-600 transition-all">
+                                        <i data-lucide="x" class="w-3 h-3"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                                    <input type="text" id="vcard-fn" placeholder="First Name" class="glass-input w-full p-4 rounded-xl text-sm">
+                                    <input type="text" id="vcard-ln" placeholder="Last Name" class="glass-input w-full p-4 rounded-xl text-sm">
+                                    <input type="text" id="vcard-job" placeholder="Role / Title" class="glass-input w-full p-4 rounded-xl text-sm md:col-span-2">
+                                </div>
                             </div>
 
-                            <!-- WiFi -->
-                            <div id="wifi-content" class="tab-content hidden space-y-8">
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div class="space-y-4">
-                                        <label for="wifi-ssid" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Network_SSID</label>
-                                        <input type="text" id="wifi-ssid" placeholder="NEURAL_LINK" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="WiFi SSID">
+                            <!-- Detailed Info -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="tel" id="vcard-phone" placeholder="Mobile Number" class="glass-input w-full p-4 rounded-xl text-sm">
+                                <input type="email" id="vcard-email" placeholder="Email Address" class="glass-input w-full p-4 rounded-xl text-sm">
+                                <input type="text" id="vcard-company" placeholder="Organization" class="glass-input w-full p-4 rounded-xl text-sm">
+                                <input type="url" id="vcard-website" placeholder="Website" class="glass-input w-full p-4 rounded-xl text-sm">
+                            </div>
+
+                            <!-- Social Bundle -->
+                            <div class="space-y-4">
+                                <h3 class="text-[9px] font-black text-white/20 tracking-[0.3em] uppercase pl-1">Social_Link_Bundle</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="social-row">
+                                        <div class="social-icon-wrap text-blue-400"><i data-lucide="linkedin" class="w-5 h-5"></i></div>
+                                        <input type="url" id="vcard-linkedin" placeholder="LinkedIn Profile Link" class="glass-input flex-1 p-3.5 rounded-xl text-xs">
                                     </div>
-                                    <div class="space-y-4">
-                                        <label for="wifi-pass" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Secure_Key</label>
-                                        <input type="password" id="wifi-pass" placeholder="••••••••" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="WiFi Password">
+                                    <div class="social-row">
+                                        <div class="social-icon-wrap text-pink-400"><i data-lucide="instagram" class="w-5 h-5"></i></div>
+                                        <input type="url" id="vcard-instagram" placeholder="@instagram_handle" class="glass-input flex-1 p-3.5 rounded-xl text-xs">
+                                    </div>
+                                    <div class="social-row md:col-span-2">
+                                        <div class="social-icon-wrap text-green-400"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                                        <input type="tel" id="vcard-wa-social" placeholder="WhatsApp (Intl. Format)" class="glass-input flex-1 p-3.5 rounded-xl text-xs">
                                     </div>
                                 </div>
-                                <div class="space-y-4">
-                                    <label for="wifi-enc" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Protocol_Stack</label>
-                                    <select id="wifi-enc" class="glass-input w-full px-6 h-16 rounded-2xl font-mono text-sm cursor-pointer appearance-none" aria-label="WiFi Encryption">
-                                        <option value="WPA">WPA / WPA2-PSK</option>
-                                        <option value="WEP">WEP (LEGACY)</option>
-                                        <option value="nopass">OPEN (UNSECURED)</option>
+                            </div>
+
+                            <button id="contact-preview-btn" class="contact-preview-cta">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                Open Contact Card Preview
+                            </button>
+                        </div>
+                        
+                        <!-- Warning Msg -->
+                        <div id="vcard-density-warning" class="hidden mt-6 p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex items-center gap-4">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500"></i>
+                            <p class="text-[10px] text-amber-500/80 leading-relaxed font-bold tracking-tight">Large payload detected. Ensuring 'QUARTILE' scan recovery. Use high-res exports for print.</p>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Content -->
+                    <div id="whatsapp-content" class="tab-content hidden transition-all duration-500">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                                <i data-lucide="message-square" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-white tracking-widest uppercase mb-0.5">Quick Comms</h2>
+                                <p class="text-[10px] text-white/40 tracking-wider">Direct WhatsApp deep linking</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="space-y-3">
+                                <label class="text-[9px] font-black text-white/30 tracking-[0.2em] uppercase pl-4">Phone Number</label>
+                                <input type="tel" id="wa-phone" placeholder="+123 456 7890" class="glass-input w-full p-5 rounded-2xl">
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-[9px] font-black text-white/30 tracking-[0.2em] uppercase pl-4">Pre-filled Message</label>
+                                <textarea id="wa-msg" rows="3" placeholder="Hello! I found your contact on SwiftQR..." class="glass-input w-full p-5 rounded-2xl resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Styling Accordion ─── -->
+                <div class="glass-card rounded-4xl overflow-hidden mb-6">
+                    <button id="accordion-toggle" class="w-full flex items-center justify-between p-7 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="p-2 bg-white/5 rounded-lg border border-white/10 glass">
+                                <i data-lucide="swatchbook" class="w-4 h-4 text-white/60"></i>
+                            </div>
+                            <span class="text-xs font-black tracking-[0.3em] text-white uppercase italic">Advanced_Styling</span>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-white/20 accordion-icon transition-transform"></i>
+                    </button>
+                    
+                    <div id="accordion-content" class="overflow-hidden transition-all duration-500 max-h-0">
+                        <div class="p-8 pt-0 space-y-10">
+                            
+                            <!-- Dot & Corner Patterns -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-white/20 tracking-[0.2em] uppercase block">Scanner Dots</label>
+                                    <select id="dot-style" class="glass-input w-full p-4 rounded-xl text-xs font-bold">
+                                        <option value="square">Square</option>
+                                        <option value="dots">Dots</option>
+                                        <option value="rounded">Rounded</option>
+                                        <option value="extra-rounded">Classic Smooth</option>
+                                        <option value="classy">Organic Flux</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-white/20 tracking-[0.2em] uppercase block">Corner Frame</label>
+                                    <select id="corner-square-type" class="glass-input w-full p-4 rounded-xl text-xs font-bold">
+                                        <option value="square">Square</option>
+                                        <option value="dot">Circular</option>
+                                        <option value="extra-rounded">Extra Rounded</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-white/20 tracking-[0.2em] uppercase block">Corner Dot</label>
+                                    <select id="corner-dot-type" class="glass-input w-full p-4 rounded-xl text-xs font-bold">
+                                        <option value="square">Square</option>
+                                        <option value="dot">Circular</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <!-- vCard (ENHANCED) -->
-                            <div id="vcard-content" class="tab-content hidden space-y-8">
-
-                                <!-- Profile Photo Upload -->
-                                <div class="space-y-4">
-                                    <label class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Profile_Photo</label>
-                                    <div class="flex items-center gap-4">
-                                        <div class="profile-avatar-wrap" id="profile-avatar-wrap">
-                                            <i data-lucide="user" id="profile-avatar-placeholder" class="w-7 h-7 text-white/20"></i>
-                                            <img id="profile-avatar-img" class="hidden" alt="Profile photo">
+                            <!-- Custom Colors -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label class="text-[10px] font-black text-white/20 tracking-[0.2em] uppercase block">QR Pattern Engine</label>
+                                        <div class="flex bg-white/5 p-1 rounded-xl glass border border-white/10">
+                                            <button class="color-mode-btn active-glass px-4 py-1.5 rounded-lg text-[9px] font-black tracking-widest uppercase transition-all" data-target="qr" data-type="solid">Solid</button>
+                                            <button class="color-mode-btn text-white/40 px-4 py-1.5 rounded-lg text-[9px] font-black tracking-widest uppercase transition-all hover:bg-white/5" data-target="qr" data-type="gradient">Gradient</button>
                                         </div>
-                                        <div class="flex-1 flex gap-3">
-                                            <label for="profile-photo-upload" class="flex-1 cursor-pointer glass-input hover:bg-white/5 h-14 flex items-center justify-center gap-3 text-[11px] font-bold tracking-widest rounded-xl transition-all">
-                                                <i data-lucide="camera" class="w-4 h-4"></i> UPLOAD_PHOTO
-                                            </label>
-                                            <input type="file" id="profile-photo-upload" accept="image/*" class="hidden">
-                                            <button id="clear-profile-photo" class="hidden w-14 h-14 glass-input text-red-400/50 hover:text-red-400 transition-all rounded-xl flex items-center justify-center">
-                                                <i data-lucide="trash-2" class="w-[18px] h-[18px]"></i>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex-1 p-5 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between">
+                                            <div class="flex items-center gap-4">
+                                                <input type="color" id="qr-color-1" value="#0f172a" class="w-8 h-8 rounded-lg bg-transparent cursor-pointer border-none p-0 outline-none">
+                                                <span class="text-[10px] font-mono text-white/40 tracking-wider">PRIMARY_HEX</span>
+                                            </div>
+                                            <div id="qr-gradient-controls" class="hidden flex items-center gap-4">
+                                                <input type="color" id="qr-color-2" value="#312e81" class="w-8 h-8 rounded-lg bg-transparent cursor-pointer border-none p-0 outline-none">
+                                                <select id="gradient-type" class="glass-input bg-transparent border-none p-1 text-[10px] font-bold text-white/60">
+                                                    <option value="linear">Linear</option>
+                                                    <option value="radial">Radial</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="qr-rotation-control" class="hidden space-y-4">
+                                        <div class="flex justify-between items-center text-[9px] font-black text-white/10 tracking-[0.2em] uppercase">
+                                            <span>Gradient Rotation</span>
+                                            <span id="qr-rotation-val" class="font-mono text-white/30">0°</span>
+                                        </div>
+                                        <input type="range" id="qr-rotation" min="0" max="360" value="0" class="glass-range w-full">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-6">
+                                    <label class="text-[10px] font-black text-white/20 tracking-[0.2em] uppercase block mb-6">Corner Eyes Branding</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="p-4 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3">
+                                            <input type="color" id="eye-frame-color" value="#0f172a" class="w-7 h-7 rounded-lg bg-transparent cursor-pointer border-none p-0">
+                                            <span class="text-[9px] font-bold text-white/40">FRAME</span>
+                                        </div>
+                                        <div class="p-4 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3">
+                                            <input type="color" id="eye-dot-color" value="#0f172a" class="w-7 h-7 rounded-lg bg-transparent cursor-pointer border-none p-0">
+                                            <span class="text-[9px] font-bold text-white/40">INNER</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Logo Station -->
+                            <div class="border-t border-white/5 pt-10 grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <div class="space-y-6">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-[10px] font-black text-white/20 tracking-[0.2em] uppercase pl-1">Logo Center Station</label>
+                                        <button id="magic-wand-btn" class="hidden magic-wand-btn" title="Extract Palette from Logo">
+                                            <i data-lucide="wand-2" class="w-5 h-5"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex-1 relative group">
+                                            <div class="w-full h-16 rounded-2xl glass border border-white/10 bg-white/5 flex items-center justify-center gap-3 cursor-pointer group-hover:border-indigo-500/30 transition-all overflow-hidden" onclick="document.getElementById('logo-upload').click()">
+                                                <i data-lucide="upload" class="w-4 h-4 text-white/30"></i>
+                                                <span class="text-[10px] font-bold text-white/20 tracking-widest uppercase">Upload_Logo</span>
+                                            </div>
+                                            <input type="file" id="logo-upload" class="hidden" accept="image/*">
+                                            <button id="clear-logo" class="hidden absolute top-0 right-0 p-2 text-white/30 hover:text-red-400 transition-colors">
+                                                <i data-lucide="trash-2" class="w-3 h-3"></i>
                                             </button>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- Name -->
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div class="space-y-4">
-                                        <label for="vcard-fn" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">ID_First</label>
-                                        <input type="text" id="vcard-fn" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="First Name">
-                                    </div>
-                                    <div class="space-y-4">
-                                        <label for="vcard-ln" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">ID_Last</label>
-                                        <input type="text" id="vcard-ln" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="Last Name">
-                                    </div>
-                                </div>
-
-                                <!-- Job / Company -->
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div class="space-y-4">
-                                        <label for="vcard-job" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">ID_Job_Position</label>
-                                        <input type="text" id="vcard-job" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="Job Title">
-                                    </div>
-                                    <div class="space-y-4">
-                                        <label for="vcard-company" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">ORGANIZATION</label>
-                                        <input type="text" id="vcard-company" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="Organization">
-                                    </div>
-                                </div>
-
-                                <!-- Tel / Email -->
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div class="space-y-4">
-                                        <label for="vcard-phone" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">TEL_Comms</label>
-                                        <input type="tel" id="vcard-phone" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="Phone Number">
-                                    </div>
-                                    <div class="space-y-4">
-                                        <label for="vcard-email" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">EMAIL_Addr</label>
-                                        <input type="email" id="vcard-email" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="Email Address">
-                                    </div>
-                                </div>
-
-                                <!-- Website + Density -->
-                                <div class="space-y-4">
-                                    <div class="flex justify-between px-2">
-                                        <label for="vcard-website" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em]">NET_Station</label>
-                                        <span id="vcard-counter" class="text-[10px] font-mono text-white/20">0_CHAR</span>
-                                    </div>
-                                    <input type="url" id="vcard-website" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="Website">
-                                    <div id="vcard-density-warning" class="hidden px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-2">
-                                        <i data-lucide="alert-triangle" class="w-3 h-3 text-amber-500 flex-shrink-0"></i>
-                                        <span class="text-[9px] font-bold text-amber-500/80 uppercase tracking-wider">QR_DENSITY_THRESHOLD_EXCEEDED</span>
-                                    </div>
-                                </div>
-
-                                <!-- Social Link Bundle -->
-                                <div class="space-y-4">
-                                    <label class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Social_Profiles</label>
+                                    <!-- Logo Masking Pill -->
                                     <div class="space-y-3">
-                                        <div class="social-row">
-                                            <div class="social-icon-wrap"><i data-lucide="linkedin" class="w-4 h-4 text-blue-400/70"></i></div>
-                                            <input type="url" id="vcard-linkedin" placeholder="linkedin.com/in/username" class="glass-input flex-1 px-5 h-12 rounded-xl font-mono text-xs" aria-label="LinkedIn">
-                                        </div>
-                                        <div class="social-row">
-                                            <div class="social-icon-wrap"><i data-lucide="instagram" class="w-4 h-4 text-pink-400/70"></i></div>
-                                            <input type="text" id="vcard-instagram" placeholder="@handle" class="glass-input flex-1 px-5 h-12 rounded-xl font-mono text-xs" aria-label="Instagram">
-                                        </div>
-                                        <div class="social-row">
-                                            <div class="social-icon-wrap"><i data-lucide="message-circle" class="w-4 h-4 text-green-400/70"></i></div>
-                                            <input type="tel" id="vcard-wa-social" placeholder="+1 234 567 8900" class="glass-input flex-1 px-5 h-12 rounded-xl font-mono text-xs" aria-label="WhatsApp Social">
+                                        <span class="text-[9px] font-black text-white/10 tracking-[0.25em] uppercase block pl-1">Logo Integration Mask</span>
+                                        <div class="mask-pill">
+                                            <button class="mask-btn active-mask" data-mask="overlay">None</button>
+                                            <button class="mask-btn" data-mask="square">Square Cut</button>
+                                            <button class="mask-btn" data-mask="circle">Circle Cut</button>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- High-Density Alert (hidden by default) -->
-                                <div id="high-density-alert" class="density-alert hidden">
-                                    <i data-lucide="zap" class="alert-icon w-4 h-4"></i>
-                                    <div class="alert-text">
-                                        HIGH_DENSITY_PAYLOAD_DETECTED — Profile photo embedded.<br>
-                                        ECC set to MAX. SVG export strongly recommended for reliable scanning.
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-center text-[9px] font-black text-white/20 tracking-[0.2em] uppercase pl-1">
+                                        <span>Logo White Clearance</span>
+                                        <div id="logo-bg-toggle" class="toggle-wrap">
+                                            <div class="toggle-dot"></div>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <!-- Contact Preview CTA -->
-                                <button id="contact-preview-btn" class="contact-preview-cta">
-                                    <i data-lucide="smartphone" class="w-4 h-4"></i>
-                                    PREVIEW_CONTACT_CARD
-                                </button>
-                            </div>
-
-                            <!-- WhatsApp -->
-                            <div id="whatsapp-content" class="tab-content hidden space-y-8">
-                                <div class="space-y-4">
-                                    <label for="wa-phone" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Recipient_UUID</label>
-                                    <input type="tel" id="wa-phone" placeholder="1234567890" class="glass-input w-full p-6 h-16 rounded-2xl font-mono text-sm" aria-label="WhatsApp Number">
-                                </div>
-                                <div class="space-y-4">
-                                    <label for="wa-msg" class="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] ml-2">Buffer_Message</label>
-                                    <textarea id="wa-msg" rows="4" class="glass-input w-full p-6 rounded-2xl font-mono text-sm resize-none" aria-label="WhatsApp Message"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Molecular Styling Accordion -->
-                        <div class="glass-card-inner rounded-3xl overflow-hidden mt-12">
-                            <button id="accordion-toggle" class="w-full flex items-center justify-between p-8 hover:bg-white/5 transition-all group">
-                                <span class="text-[11px] font-bold uppercase tracking-[0.3em] text-white/60">Molecular_Styling</span>
-                                <i data-lucide="chevron-down" class="text-white/30 accordion-icon w-[18px] h-[18px]"></i>
-                            </button>
-                            <div id="accordion-content" class="max-h-0 overflow-hidden transition-all duration-700 ease-in-out">
-                                <div class="p-10 pt-0 space-y-16">
-                                    <div class="grid md:grid-cols-2 gap-12">
-
-                                        <!-- Pattern, Eyes & Logo -->
-                                        <div class="space-y-8">
-                                            <div class="space-y-4">
-                                                <label class="text-[11px] font-bold text-white/20 uppercase tracking-widest ml-2">Mesh_Pattern</label>
-                                                <select id="dot-style" class="glass-input w-full h-14 px-6 rounded-xl font-mono text-[11px] appearance-none cursor-pointer">
-                                                    <option value="square">CLASSIC_RECT</option>
-                                                    <option value="rounded">POLY_SMOOTH</option>
-                                                    <option value="dots">DOT_MATRIX</option>
-                                                </select>
-                                            </div>
-
-                                            <!-- Eye Shape Controls -->
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div class="space-y-2">
-                                                    <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest ml-1">Eye_Outer</label>
-                                                    <select id="corner-square-type" class="glass-input w-full h-11 px-4 rounded-xl font-mono text-[9px] appearance-none cursor-pointer">
-                                                        <option value="square">SQUARE</option>
-                                                        <option value="extra-rounded">E_ROUND</option>
-                                                        <option value="dot">DOT</option>
-                                                        <option value="classy">CLASSY</option>
-                                                    </select>
-                                                </div>
-                                                <div class="space-y-2">
-                                                    <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest ml-1">Eye_Inner</label>
-                                                    <select id="corner-dot-type" class="glass-input w-full h-11 px-4 rounded-xl font-mono text-[9px] appearance-none cursor-pointer">
-                                                        <option value="dot">DOT</option>
-                                                        <option value="square">SQUARE</option>
-                                                        <option value="rounded">ROUND</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <!-- Eye Color Controls (NEW) -->
-                                            <div class="space-y-4 pt-4 border-t border-white/5">
-                                                <label class="text-[11px] font-bold text-white/20 uppercase tracking-widest ml-2">EYE_CHROMA</label>
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <div class="space-y-2">
-                                                        <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest ml-1">Frame_Color</label>
-                                                        <input type="color" id="eye-frame-color" value="#0f172a" class="w-full h-12 bg-white/5 border border-white/10 cursor-pointer rounded-xl p-1">
-                                                    </div>
-                                                    <div class="space-y-2">
-                                                        <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest ml-1">Dot_Color</label>
-                                                        <input type="color" id="eye-dot-color" value="#0f172a" class="w-full h-12 bg-white/5 border border-white/10 cursor-pointer rounded-xl p-1">
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Logo Controls -->
-                                            <div class="space-y-4 pt-4 border-t border-white/5">
-                                                <label class="text-[11px] font-bold text-white/20 uppercase tracking-widest ml-2">CORE_IMAGE_STYLING</label>
-                                                <div class="flex items-center justify-between px-2">
-                                                    <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Logo_Bg_Buffer</span>
-                                                    <button id="logo-bg-toggle" class="toggle-wrap" aria-label="Toggle logo background">
-                                                        <div class="toggle-dot"></div>
-                                                    </button>
-                                                </div>
-                                                <div class="space-y-2">
-                                                    <div class="flex justify-between px-2">
-                                                        <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest">Logo_Margin</label>
-                                                        <span id="logo-margin-val" class="text-[9px] font-mono text-white/40">10px</span>
-                                                    </div>
-                                                    <input type="range" id="logo-margin" min="0" max="30" value="10" class="w-full glass-range">
-                                                </div>
-
-                                                <!-- Logo Masking Mode (NEW) -->
-                                                <div class="space-y-2">
-                                                    <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest ml-1">Logo_Mask_Mode</label>
-                                                    <div class="mask-pill">
-                                                        <button data-mask="overlay" class="mask-btn active-mask">OVERLAY</button>
-                                                        <button data-mask="circle" class="mask-btn">CIRCLE</button>
-                                                        <button data-mask="square" class="mask-btn">SQUARE</button>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Upload + Magic Wand + Clear -->
-                                                <div class="flex items-center gap-3">
-                                                    <label for="logo-upload" class="flex-1 cursor-pointer glass-input hover:bg-white/5 h-14 flex items-center justify-center gap-3 text-[11px] font-bold tracking-widest rounded-xl transition-all">
-                                                        UPLOAD_ASSET
-                                                    </label>
-                                                    <input type="file" id="logo-upload" accept="image/*" class="hidden">
-                                                    <button id="magic-wand-btn" class="magic-wand-btn hidden" title="Auto-extract palette from logo" aria-label="Magic wand auto-palette">
-                                                        <i data-lucide="wand-2" class="w-5 h-5"></i>
-                                                    </button>
-                                                    <button id="clear-logo" class="hidden w-14 h-14 glass-input text-red-400/50 hover:text-red-400 transition-all rounded-xl flex items-center justify-center">
-                                                        <i data-lucide="trash-2" class="w-[18px] h-[18px]"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                    
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center text-[9px] font-black text-white/10 tracking-[0.2em] uppercase">
+                                            <span>Safety Margin</span>
+                                            <span id="logo-margin-val" class="font-mono text-white/30">10px</span>
                                         </div>
-
-                                        <!-- Colors -->
-                                        <div class="space-y-8">
-                                            <div class="space-y-4">
-                                                <label class="text-[11px] font-bold text-white/20 uppercase tracking-widest ml-2">DATA_CHROMA</label>
-                                                <div class="grid grid-cols-2 gap-2 mb-4">
-                                                    <select id="gradient-type" class="glass-input h-10 px-4 rounded-xl font-mono text-[9px] appearance-none cursor-pointer">
-                                                        <option value="linear">LINEAR</option>
-                                                        <option value="radial">RADIAL</option>
-                                                    </select>
-                                                    <div class="flex gap-1 p-1 glass-input rounded-xl h-10">
-                                                        <button data-type="solid" data-target="qr" class="flex-1 text-[9px] font-bold rounded-lg transition-all color-mode-btn active-glass">SOLID</button>
-                                                        <button data-type="gradient" data-target="qr" class="flex-1 text-[9px] font-bold rounded-lg transition-all color-mode-btn hover:bg-white/5 text-white/40">GRAD</button>
-                                                    </div>
-                                                </div>
-                                                <div class="grid grid-cols-2 gap-3">
-                                                    <input type="color" id="qr-color-1" value="#0f172a" class="w-full h-12 bg-white/5 border border-white/10 cursor-pointer rounded-xl p-1">
-                                                    <div id="qr-gradient-controls" class="hidden">
-                                                        <input type="color" id="qr-color-2" value="#312e81" class="w-full h-12 bg-white/5 border border-white/10 cursor-pointer rounded-xl p-1">
-                                                    </div>
-                                                </div>
-                                                <div id="qr-rotation-control" class="hidden space-y-2">
-                                                    <div class="flex justify-between px-2">
-                                                        <label class="text-[9px] font-bold text-white/20 uppercase tracking-widest">Grad_Dir</label>
-                                                        <span id="qr-rotation-val" class="text-[9px] font-mono text-white/40">0°</span>
-                                                    </div>
-                                                    <input type="range" id="qr-rotation" min="0" max="360" value="0" class="w-full glass-range">
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <input type="range" id="logo-margin" min="0" max="40" value="10" class="glass-range w-full">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-
-                <!-- Preview Card -->
-                <aside class="flex flex-col gap-6 h-full">
-                    <div class="glass-card flex-1 flex flex-col p-10 rounded-[3rem] items-center justify-center relative group overflow-hidden">
-                        <!-- Card View Toggle -->
-                        <div class="absolute top-6 right-6 z-20 flex items-center gap-3">
-                            <span class="text-[9px] font-bold text-white/30 tracking-widest uppercase">Card_Mockup</span>
-                            <button id="toggle-mockup" class="toggle-wrap" aria-label="Toggle mockup view">
-                                <div class="toggle-dot"></div>
-                            </button>
-                        </div>
-
-                        <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-
-                        <!-- Standard Preview -->
-                        <div id="standard-view" class="relative z-10 w-full aspect-square flex items-center justify-center max-w-[300px]">
-                            <div id="vcard-badge" class="hidden absolute -top-4 -right-12 vcard-badge px-3 py-2 rounded-xl flex items-center gap-2 border border-white/10 backdrop-blur-md">
-                                <i data-lucide="contact-2" class="w-3 h-3 text-white/70"></i>
-                                <span class="text-[8px] font-bold text-white/80 tracking-wider uppercase">Contact_Auto_Sync</span>
-                            </div>
-                            <div id="qr-preview" class="w-full h-full p-4 bg-white rounded-3xl shadow-2xl"></div>
-                        </div>
-
-                        <!-- 3D Card Mockup -->
-                        <div id="mockup-view" class="hidden relative z-10 w-full aspect-square flex items-center justify-center perspective-deep">
-                            <div class="glass-mockup-card relative w-[320px] h-[190px] rounded-[1.5rem] p-6 shadow-2xl transition-transform duration-500 transform-style-3d hover-rotate">
-                                <div class="absolute inset-0 rounded-[1.5rem] glass-shimmer opacity-30"></div>
-                                <div class="flex items-start justify-between h-full">
-                                    <div class="flex flex-col gap-2">
-                                        <div class="w-8 h-8 bg-white/10 rounded-lg border border-white/20"></div>
-                                        <div class="w-16 h-1 bg-white/10 rounded-full"></div>
-                                        <div class="w-12 h-1 bg-white/10 rounded-full"></div>
-                                    </div>
-                                    <div class="w-[100px] h-[100px] bg-white p-1 rounded-xl shadow-lg self-center">
-                                        <img id="mockup-qr-img" class="w-full h-full object-contain" alt="QR Mockup">
-                                    </div>
-                                </div>
-                                <div class="absolute bottom-4 left-6 text-[8px] font-mono text-white/20 tracking-[0.4em] uppercase">Premium_Identity_System</div>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 flex flex-col items-center gap-2">
-                            <span class="text-[10px] font-mono tracking-[0.4em] text-white/30 uppercase">Scan_Calibration</span>
-                            <div class="flex gap-4 items-center">
-                                <div class="px-3 py-1 bg-white/10 rounded-full border border-white/10 text-[9px] font-bold text-white/60">ECC: <span id="ecc-display">MEDIUM</span></div>
-                                <div class="px-3 py-1 bg-white/10 rounded-full border border-white/10 text-[9px] font-bold text-white/50">QUALITY: <span id="quality-val" class="font-mono">1024</span>px</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col gap-3">
-                        <div class="space-y-4 px-4 pb-4">
-                            <label class="text-[9px] font-bold text-white/20 uppercase tracking-[0.4em]">EXPORT_QUALITY_BITRATE</label>
-                            <input type="range" id="export-quality" min="512" max="4000" step="128" value="1024" class="w-full glass-range">
-                        </div>
-                        <div class="grid grid-cols-[1fr_56px_56px] gap-3">
-                            <button id="download-png" class="glass-btn primary py-5 rounded-[1.5rem] text-[11px] font-bold tracking-[0.3em] uppercase flex items-center justify-center gap-3">
-                                <i data-lucide="file-output" class="w-4 h-4"></i> GENERATE_PNG
-                            </button>
-                            <button id="copy-clipboard" class="glass-btn secondary py-5 rounded-[1.5rem] flex items-center justify-center group" title="Copy PNG to Clipboard" aria-label="Copy to Clipboard">
-                                <i data-lucide="copy" class="w-[18px] h-[18px] group-hover:scale-110 transition-transform"></i>
-                            </button>
-                            <button id="download-svg" class="glass-btn secondary py-5 rounded-[1.5rem] flex items-center justify-center" title="Export SVG Vector" aria-label="Download SVG">
-                                <i data-lucide="layers" class="w-[18px] h-[18px]"></i>
-                            </button>
-                        </div>
-                        <button id="download-vcf" class="glass-btn secondary w-full py-4 rounded-[1.5rem] text-[11px] font-bold tracking-[0.3em] uppercase flex items-center justify-center gap-3">
-                            <i data-lucide="file-text" class="w-4 h-4"></i> EXPORT_VCF_DATA
-                        </button>
-                    </div>
-                </aside>
-            </div>
-        </main>
-    </div>
-
-    <!-- History Panel -->
-    <section class="max-w-[1400px] mx-auto px-8 py-20 pb-40">
-        <div class="glass-card p-12 rounded-[3.5rem] space-y-12">
-            <div class="flex items-center justify-between px-4">
-                <h2 class="text-2xl font-bold tracking-tight text-white/80">Archived_Generations</h2>
-                <button id="clear-history" class="px-6 py-2 bg-red-400/10 border border-red-400/20 rounded-xl text-[10px] font-bold text-red-400/60 hover:bg-red-400 hover:text-white transition-all uppercase tracking-widest flex items-center gap-2">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> WIPE_ARCHIVE
-                </button>
-            </div>
-            <div id="history-container" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <div id="no-history" class="col-span-full py-32 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-[2rem] text-white/20 font-mono text-sm tracking-widest uppercase">
-                    [ CACHE_EMPTY ]
                 </div>
-            </div>
-        </div>
+                
+                <!-- History Feed -->
+                <div class="glass-card rounded-4xl p-8 pb-4">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="clock" class="w-4 h-4 text-white/20"></i>
+                            <span class="text-xs font-black tracking-[0.3em] text-white uppercase italic">Design_History</span>
+                        </div>
+                        <button id="clear-history" class="text-[10px] font-black text-white/10 tracking-widest uppercase hover:text-red-400 transition-colors">Wipe_Log</button>
+                    </div>
+                    
+                    <div id="history-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- History Items Empty State -->
+                        <div id="no-history" class="md:col-span-2 py-12 flex flex-col items-center justify-center text-center opacity-30">
+                            <i data-lucide="archive" class="w-10 h-10 mb-4 opacity-50"></i>
+                            <span class="text-[10px] font-black tracking-[0.4em] uppercase">Void_Index_Null</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ─── Right Panel: Export & Preview ─── -->
+            <aside class="lg:w-[460px] flex flex-col gap-6 order-1 lg:order-3">
+                
+                <div class="glass-card rounded-[3rem] p-4 pt-10 sticky top-12 flex flex-col">
+                    
+                    <!-- Preview Toggle Station -->
+                    <div class="flex justify-center mb-8">
+                        <div class="inline-flex glass bg-white/5 border border-white/10 p-1 rounded-2xl">
+                            <button id="toggle-mockup" class="group relative px-6 py-3 rounded-xl transition-all duration-500 hover:bg-white/5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-white/20 transition-all group-[.active]:bg-indigo-400 group-[.active]:shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
+                                    <span class="text-[10px] font-black tracking-[0.3em] text-white/40 group-[.active]:text-white uppercase transition-colors italic">Studio_Mockup</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Display Canvas -->
+                    <div class="relative px-6">
+                        <!-- Standard Preview -->
+                        <div id="standard-view" class="aspect-square bg-white rounded-[2rem] overflow-hidden shadow-2xl relative group transition-all duration-700">
+                             <div class="absolute inset-0 z-10 flex items-center justify-center p-8">
+                                 <div id="qr-preview" class="w-full h-full flex items-center justify-center"></div>
+                             </div>
+                             <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-4 py-2 bg-indigo-950/80 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                                <span id="ecc-display" class="text-[9px] font-black text-white tracking-[0.2em] font-mono">MEDIUM</span>
+                             </div>
+                             <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 to-transparent pointer-events-none"></div>
+                        </div>
+
+                        <!-- 3D Mockup View -->
+                        <div id="mockup-view" class="hidden aspect-square perspective-deep group">
+                            <div class="w-full h-full transform-style-3d hover-rotate transition-all duration-700 ease-out flex items-center justify-center">
+                                <div class="glass-mockup-card w-full h-full rounded-[2.5rem] relative transform translate-z-10 group-hover:shadow-[0_80px_160px_rgba(0,0,0,0.4)] overflow-hidden transition-all duration-700 flex items-center justify-center p-12">
+                                     <div class="absolute inset-0 glass-shimmer mix-blend-overlay pointer-events-none opacity-40"></div>
+                                     <img id="mockup-qr-img" src="" alt="3D View" class="w-full aspect-square object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.25)]">
+                                     <div class="absolute bottom-10 flex flex-col items-center gap-2 opacity-30 group-hover:opacity-60 transition-all">
+                                         <i data-lucide="box" class="w-4 h-4 text-white"></i>
+                                         <span class="text-[8px] font-black tracking-[0.4em] uppercase text-white">X_RAY_ENGINE_V3</span>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Kit -->
+                    <div class="p-8 space-y-6">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-[9px] font-black text-white/30 tracking-[0.2em] uppercase">
+                                <span>Output Definition</span>
+                                <span id="quality-val" class="font-mono text-white/40">1024</span>
+                            </div>
+                            <input type="range" id="export-quality" min="512" max="4096" step="128" value="1024" class="glass-range w-full">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="download-png" class="glass-btn primary h-16 rounded-3xl flex items-center justify-center gap-2 font-black text-[10px] tracking-widest uppercase italic">
+                                <i data-lucide="download" class="w-4 h-4"></i> Get_PNG
+                            </button>
+                            <button id="download-svg" class="glass-btn secondary h-16 rounded-3xl flex items-center justify-center gap-2 font-black text-[10px] tracking-widest uppercase italic">
+                                <i data-lucide="file-code" class="w-4 h-4"></i> Get_SVG
+                            </button>
+                            <button id="download-vcf" class="glass-btn secondary h-16 rounded-3xl flex items-center justify-center gap-2 font-black text-[10px] tracking-widest uppercase italic md:col-span-2">
+                                <i data-lucide="file-user" class="w-4 h-4"></i> Secure_VCard_Export
+                            </button>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button id="copy-clipboard" class="flex-1 h-14 rounded-2xl bg-white/5 border border-white/10 glass flex items-center justify-center gap-3 hover:bg-white/10 transition-all group overflow-hidden relative" title="Copy to Clipboard">
+                                <i data-lucide="copy" class="w-4 h-4 text-white/40 group-hover:scale-110 transition-all"></i>
+                                <span class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">Live_Copy</span>
+                            </button>
+                            <button id="reset-btn" class="w-14 h-14 rounded-2xl bg-red-500/5 border border-red-500/10 flex items-center justify-center text-red-500/40 hover:bg-red-500/10 hover:text-red-500 transition-all" title="Reset All Settings">
+                                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
 
         <!-- Footer -->
-        <footer role="contentinfo" itemscope itemtype="http://schema.org/Person" class="glass-footer fixed bottom-0 left-0 right-0 z-50 h-10 border-t border-white/10 backdrop-blur-md flex items-center justify-center px-8 transition-all hover:h-12 group">
-            <div class="max-w-7xl w-full flex items-center justify-between text-[9px] font-mono tracking-[0.2em] uppercase">
-                <div class="flex items-center gap-6">
-                    <span class="text-white/20">RELEASE_TYPE: MIT_LICENSE</span>
-                    <p class="text-white/40">© 2026 ARCHIVE_ACCESS:
-                        <a href="https://rizvee.github.io" itemprop="url" class="hover:text-white transition-colors">
-                            <span itemprop="name">Hasan Rizvee</span>
-                        </a>
-                    </p>
+        <footer class="glass-footer py-12 px-6 lg:px-12 border-t border-white/5 relative z-10 mt-auto">
+            <div class="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-8 opacity-60 transition-opacity hover:opacity-100">
+                <div class="flex flex-col gap-1">
+                    <div class="text-[10px] font-black tracking-[0.5em] text-white uppercase italic">Swift_QR_Experimental_v3</div>
+                    <div class="text-[9px] font-bold text-white/40 tracking-wider">Engineered by <a href="https://rizvee.github.io" class="text-indigo-400 hover:text-white transition-colors">Hasan Rizvee</a></div>
                 </div>
-                <div class="flex items-center gap-6">
-                    <a href="https://rizvee.github.io" itemprop="url" class="text-white/20 hover:text-white transition-colors">PORTFOLIO_NODE</a>
-                    <a href="https://github.com/rizvee" rel="me" class="text-white/20 hover:text-white transition-colors flex items-center gap-2">
-                        <i data-lucide="github" class="w-3 h-3"></i> GITHUB_REPO
+                
+                <div class="flex items-center gap-10">
+                    <a href="https://github.com/rizvee" class="flex items-center gap-2 text-[10px] font-bold text-white tracking-widest uppercase hover:text-indigo-400 transition-all">
+                        <i data-lucide="github" class="w-3.5 h-3.5"></i> GitHub
                     </a>
+                    <a href="https://rizvee.github.io" class="flex items-center gap-2 text-[10px] font-bold text-white tracking-widest uppercase hover:text-indigo-400 transition-all">
+                        <i data-lucide="layout" class="w-3.5 h-3.5"></i> Portfolio
+                    </a>
+                    <a href="#" class="hidden md:block text-[10px] font-bold text-white tracking-widest uppercase hover:text-indigo-400 transition-all">Manifesto</a>
                 </div>
+
+                <div class="text-[9px] font-mono text-white/20 whitespace-nowrap">© 2026 — SWIFT_STUDIO_PROTOCOL</div>
             </div>
         </footer>
-    </section>
+    </div>
 
-    <!-- ═══ Contact Preview Modal (iPhone Frame) ═══ -->
-    <div id="contact-preview-modal" class="preview-modal-overlay hidden">
-        <button id="close-preview-modal" class="modal-close-btn" aria-label="Close preview">
-            <i data-lucide="x" class="w-5 h-5"></i>
+    <!-- ─── Contact Preview Modal (iPhone 15 Pro Mirror) ─── -->
+    <div id="contact-preview-modal" class="hidden preview-modal-overlay">
+        <button id="close-preview-modal" class="modal-close-btn">
+            <i data-lucide="x" class="w-6 h-6"></i>
         </button>
-        <div class="iphone-shell">
+
+        <div class="iphone-shell scale-[0.85] md:scale-100">
             <div class="dynamic-island"></div>
             <div class="iphone-screen">
-                <!-- Status Bar -->
                 <div class="ios-status-bar">
-                    <span>9:41</span>
-                    <div class="ios-signal">
-                        <span style="height:5px"></span><span style="height:8px"></span><span style="height:12px"></span><span style="height:16px"></span>
-                        <span style="margin-left:4px;font-size:11px">WiFi</span>
-                        <span style="margin-left:4px;font-size:11px">🔋</span>
+                    <div id="ios-time" class="font-bold">9:41</div>
+                    <div class="ios-signal gap-1">
+                        <span class="h-[8px]"></span><span class="h-[10px]"></span><span class="h-[12px]"></span><span class="h-[14px]"></span>
+                        <div class="ml-1 text-[10px]">5G</div>
+                        <div class="ml-2 w-6 h-3 rounded-[3px] border border-black/40 flex items-center p-[1px] relative">
+                            <div class="h-full bg-black rounded-[1px] w-[80%]"></div>
+                            <div class="absolute -right-[3px] w-[2px] h-[4px] bg-black/40 rounded-full"></div>
+                        </div>
                     </div>
                 </div>
-                <!-- Nav Bar -->
-                <div class="ios-nav-bar">
-                    <span class="ios-back"><i data-lucide="chevron-left" class="w-4 h-4 inline"></i> Contacts</span>
-                    <span class="ios-edit-btn">Edit</span>
+
+                <div class="ios-nav-bar mt-2">
+                    <div class="ios-back"><i data-lucide="chevron-left" class="w-5 h-5 -ml-1"></i>Contacts</div>
+                    <div class="ios-edit-btn font-semibold">Edit</div>
                 </div>
-                <!-- Scrollable Contact Content -->
+
                 <div class="contact-scroll-area">
                     <div class="ios-contact-header">
-                        <div class="ios-avatar" id="preview-avatar-wrap">
-                            <span id="preview-initials">??</span>
+                        <div id="preview-avatar-wrap" class="ios-avatar">
+                            <span id="preview-initials">JD</span>
                         </div>
-                        <div class="ios-contact-name" id="preview-name">Full Name</div>
-                        <div class="ios-contact-sub" id="preview-job-company"></div>
+                        <h2 id="preview-name" class="ios-contact-name">John Doe</h2>
+                        <p id="preview-job-info" class="ios-contact-sub">Lead Designer · Swift Studio</p>
                     </div>
-                    <!-- Action Row -->
+
                     <div class="ios-actions">
-                        <div class="ios-act"><div class="ios-act-icon">📞</div><div class="ios-act-label">call</div></div>
-                        <div class="ios-act"><div class="ios-act-icon">💬</div><div class="ios-act-label">message</div></div>
-                        <div class="ios-act"><div class="ios-act-icon">📧</div><div class="ios-act-label">mail</div></div>
-                        <div class="ios-act"><div class="ios-act-icon">🌐</div><div class="ios-act-label">web</div></div>
+                        <div class="ios-act opacity-50"><i data-lucide="message-circle" class="w-4 h-4 text-blue-500"></i><span class="ios-act-label">message</span></div>
+                        <div class="ios-act"><i data-lucide="phone" class="w-4 h-4 text-blue-500"></i><span class="ios-act-label">call</span></div>
+                        <div class="ios-act opacity-50"><i data-lucide="video" class="w-4 h-4 text-blue-500"></i><span class="ios-act-label">video</span></div>
+                        <div class="ios-act opacity-50"><i data-lucide="mail" class="w-4 h-4 text-blue-500"></i><span class="ios-act-label">mail</span></div>
                     </div>
-                    <!-- Info Rows -->
-                    <div class="ios-info-section" id="preview-info-section">
-                        <!-- Populated by JS -->
+
+                    <div id="preview-info-section" class="ios-info-section space-y-4">
+                        <!-- Dynamic Info Cards -->
                     </div>
-                    <!-- Social Profiles -->
-                    <div class="ios-info-section" id="preview-social-section" style="display:none;">
-                        <div class="ios-info-card" id="preview-social-card">
-                            <!-- Populated by JS -->
+
+                    <div id="preview-social-section" class="ios-info-section space-y-3">
+                        <h3 class="text-[10px] font-bold text-black/40 uppercase pl-1 mb-2">Social Profiles</h3>
+                        <div id="preview-social-card" class="ios-info-card">
+                            <!-- Dynamic Social Rows -->
                         </div>
                     </div>
                 </div>
+
                 <div class="ios-home-bar"></div>
             </div>
         </div>
     </div>
 
+    <!-- ─── Core Scripts ─── -->
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    
+    <!-- App Logic -->
     <script src="app.js"></script>
+
+    <script>
+        // Update time in iPhone preview
+        setInterval(() => {
+            const now = new Date();
+            const time = now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+            const el = document.getElementById('ios-time');
+            if (el) el.textContent = time;
+        }, 1000);
+    </script>
 </body>
 </html>

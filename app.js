@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
        PWA — Register Service Worker
        ═══════════════════════════════════════════════ */
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
+        navigator.serviceWorker.register('./sw.js').catch(err => console.debug('Service Worker registration failed:', err));
     }
 
     /* ═══════════════════════════════════════════════
@@ -19,113 +19,115 @@ document.addEventListener('DOMContentLoaded', () => {
     createIcons();
 
     /* ═══════════════════════════════════════════════
-       DOM References
+       DOM References (Grouped)
        ═══════════════════════════════════════════════ */
-    // Tabs
-    const tabButtons       = document.querySelectorAll('.tab-btn');
-    const tabContents      = document.querySelectorAll('.tab-content');
-
-    // QR Preview
-    const qrPreviewContainer = document.getElementById('qr-preview');
-    const eccDisplay         = document.getElementById('ecc-display');
-    const exportQualitySlider= document.getElementById('export-quality');
-    const qualityValDisplay  = document.getElementById('quality-val');
-
-    // Export Buttons
-    const downloadPngBtn   = document.getElementById('download-png');
-    const downloadSvgBtn   = document.getElementById('download-svg');
-    const downloadVcfBtn   = document.getElementById('download-vcf');
-    const copyClipboardBtn = document.getElementById('copy-clipboard');
-    const resetBtn         = document.getElementById('reset-btn');
-
-    // History
-    const historyContainer = document.getElementById('history-container');
-    const noHistoryMsg     = document.getElementById('no-history');
-    const clearHistoryBtn  = document.getElementById('clear-history');
-
-    // View toggles
-    const toggleMockupBtn  = document.getElementById('toggle-mockup');
-    const standardView     = document.getElementById('standard-view');
-    const mockupView       = document.getElementById('mockup-view');
-    const mockupQrImg      = document.getElementById('mockup-qr-img');
-    const vcardBadge       = document.getElementById('vcard-badge');
-
-    // vCard density
-    const vcardCounter     = document.getElementById('vcard-counter');
-    const vcardWarning     = document.getElementById('vcard-density-warning');
-    const highDensityAlert = document.getElementById('high-density-alert');
-
-    // URL input
-    const inputUrl         = document.getElementById('input-url');
-
-    // WiFi inputs
-    const wifiSsid         = document.getElementById('wifi-ssid');
-    const wifiPass         = document.getElementById('wifi-pass');
-    const wifiEnc          = document.getElementById('wifi-enc');
-
-    // vCard core inputs
-    const vcardFn          = document.getElementById('vcard-fn');
-    const vcardLn          = document.getElementById('vcard-ln');
-    const vcardJob         = document.getElementById('vcard-job');
-    const vcardPhone       = document.getElementById('vcard-phone');
-    const vcardEmail       = document.getElementById('vcard-email');
-    const vcardCompany     = document.getElementById('vcard-company');
-    const vcardWebsite     = document.getElementById('vcard-website');
-
-    // vCard social inputs (NEW)
-    const vcardLinkedIn    = document.getElementById('vcard-linkedin');
-    const vcardInstagram   = document.getElementById('vcard-instagram');
-    const vcardWaSocial    = document.getElementById('vcard-wa-social');
-
-    // Profile photo (NEW)
-    const profilePhotoUpload    = document.getElementById('profile-photo-upload');
-    const profileAvatarWrap     = document.getElementById('profile-avatar-wrap');
-    const profileAvatarImg      = document.getElementById('profile-avatar-img');
-    const profileAvatarPlaceholder = document.getElementById('profile-avatar-placeholder');
-    const clearProfilePhotoBtn  = document.getElementById('clear-profile-photo');
-
-    // WhatsApp
-    const waPhone          = document.getElementById('wa-phone');
-    const waMsg            = document.getElementById('wa-msg');
-
-    // Accordion
-    const accordionToggle  = document.getElementById('accordion-toggle');
-    const accordionContent = document.getElementById('accordion-content');
-    const accordionIcon    = document.querySelector('.accordion-icon');
-
-    // Styling controls
-    const dotStyle             = document.getElementById('dot-style');
-    const cornerSquareType     = document.getElementById('corner-square-type');
-    const cornerDotType        = document.getElementById('corner-dot-type');
-    const eyeFrameColor        = document.getElementById('eye-frame-color');
-    const eyeDotColor          = document.getElementById('eye-dot-color');
-    const logoUpload           = document.getElementById('logo-upload');
-    const clearLogoBtn         = document.getElementById('clear-logo');
-    const logoBgToggle         = document.getElementById('logo-bg-toggle');
-    const logoMargin           = document.getElementById('logo-margin');
-    const logoMarginVal        = document.getElementById('logo-margin-val');
-    const magicWandBtn         = document.getElementById('magic-wand-btn');
-
-    // Color mode
-    const colorModeBtns        = document.querySelectorAll('.color-mode-btn');
-    const qrColor1             = document.getElementById('qr-color-1');
-    const qrColor2             = document.getElementById('qr-color-2');
-    const qrRotation           = document.getElementById('qr-rotation');
-    const qrRotationVal        = document.getElementById('qr-rotation-val');
-    const gradientTypeSelect   = document.getElementById('gradient-type');
-    const qrGradientControls   = document.getElementById('qr-gradient-controls');
-    const qrRotationControl    = document.getElementById('qr-rotation-control');
-
-    // Masking buttons (NEW)
-    const maskBtns             = document.querySelectorAll('.mask-btn');
-
-    // Contact preview modal (NEW)
-    const contactPreviewBtn    = document.getElementById('contact-preview-btn');
-    const contactPreviewModal  = document.getElementById('contact-preview-modal');
-    const closePreviewModal    = document.getElementById('close-preview-modal');
-
-    // Theme toggle (NEW)
-    const themeToggle          = document.getElementById('theme-toggle');
+    const UI = {
+        tabs: {
+            buttons: document.querySelectorAll('.tab-btn'),
+            contents: document.querySelectorAll('.tab-content')
+        },
+        qr: {
+            preview: document.getElementById('qr-preview'),
+            ecc: document.getElementById('ecc-display'),
+            quality: document.getElementById('export-quality'),
+            qualityVal: document.getElementById('quality-val')
+        },
+        export: {
+            png: document.getElementById('download-png'),
+            svg: document.getElementById('download-svg'),
+            vcf: document.getElementById('download-vcf'),
+            copy: document.getElementById('copy-clipboard'),
+            reset: document.getElementById('reset-btn')
+        },
+        history: {
+            container: document.getElementById('history-container'),
+            empty: document.getElementById('no-history'),
+            clear: document.getElementById('clear-history')
+        },
+        mockup: {
+            toggle: document.getElementById('toggle-mockup'),
+            standard: document.getElementById('standard-view'),
+            view: document.getElementById('mockup-view'),
+            image: document.getElementById('mockup-qr-img')
+        },
+        vcard: {
+            badge: document.getElementById('vcard-badge'),
+            counter: document.getElementById('vcard-counter'),
+            warning: document.getElementById('vcard-density-warning'),
+            alert: document.getElementById('high-density-alert'),
+            fn: document.getElementById('vcard-fn'),
+            ln: document.getElementById('vcard-ln'),
+            job: document.getElementById('vcard-job'),
+            phone: document.getElementById('vcard-phone'),
+            email: document.getElementById('vcard-email'),
+            org: document.getElementById('vcard-company'),
+            web: document.getElementById('vcard-website'),
+            linkedin: document.getElementById('vcard-linkedin'),
+            instagram: document.getElementById('vcard-instagram'),
+            whatsapp: document.getElementById('vcard-wa-social'),
+            photoUpload: document.getElementById('profile-photo-upload'),
+            avatarWrap: document.getElementById('profile-avatar-wrap'),
+            avatarImg: document.getElementById('profile-avatar-img'),
+            avatarPlaceholder: document.getElementById('profile-avatar-placeholder'),
+            clearPhoto: document.getElementById('clear-profile-photo'),
+            previewBtn: document.getElementById('contact-preview-btn'),
+            previewModal: document.getElementById('contact-preview-modal'),
+            closePreview: document.getElementById('close-preview-modal')
+        },
+        inputs: {
+            url: document.getElementById('input-url'),
+            wifi: {
+                ssid: document.getElementById('wifi-ssid'),
+                pass: document.getElementById('wifi-pass'),
+                enc: document.getElementById('wifi-enc')
+            },
+            wa: {
+                phone: document.getElementById('wa-phone'),
+                msg: document.getElementById('wa-msg')
+            }
+        },
+        preview: {
+            name: document.getElementById('preview-name'),
+            initials: document.getElementById('preview-initials'),
+            jobInfo: document.getElementById('preview-job-info'),
+            avatarWrap: document.getElementById('preview-avatar-wrap'),
+            info: document.getElementById('preview-info-section'),
+            socialSection: document.getElementById('preview-social-section'),
+            socialCard: document.getElementById('preview-social-card')
+        },
+        controls: {
+            accordion: {
+                toggle: document.getElementById('accordion-toggle'),
+                content: document.getElementById('accordion-content'),
+                icon: document.querySelector('.accordion-icon')
+            },
+            styling: {
+                dot: document.getElementById('dot-style'),
+                cornerSq: document.getElementById('corner-square-type'),
+                cornerDot: document.getElementById('corner-dot-type'),
+                eyeFrame: document.getElementById('eye-frame-color'),
+                eyeDot: document.getElementById('eye-dot-color'),
+                logoUpload: document.getElementById('logo-upload'),
+                clearLogo: document.getElementById('clear-logo'),
+                logoBg: document.getElementById('logo-bg-toggle'),
+                logoMargin: document.getElementById('logo-margin'),
+                logoMarginVal: document.getElementById('logo-margin-val'),
+                magicWand: document.getElementById('magic-wand-btn'),
+                maskBtns: document.querySelectorAll('.mask-btn')
+            },
+            color: {
+                modes: document.querySelectorAll('.color-mode-btn'),
+                c1: document.getElementById('qr-color-1'),
+                c2: document.getElementById('qr-color-2'),
+                rotation: document.getElementById('qr-rotation'),
+                rotationVal: document.getElementById('qr-rotation-val'),
+                gradType: document.getElementById('gradient-type'),
+                gradControls: document.getElementById('qr-gradient-controls'),
+                rotControl: document.getElementById('qr-rotation-control')
+            },
+            theme: document.getElementById('theme-toggle')
+        }
+    };
 
     /* ═══════════════════════════════════════════════
        App State
@@ -148,13 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (light) {
             document.documentElement.classList.add('light');
             document.documentElement.classList.remove('dark');
-            themeToggle.classList.add('light-active');
-            themeToggle.querySelector('.theme-dot').textContent = '☀️';
+            UI.controls.theme.classList.add('light-active');
+            UI.controls.theme.querySelector('.theme-dot').textContent = '☀️';
         } else {
             document.documentElement.classList.remove('light');
             document.documentElement.classList.add('dark');
-            themeToggle.classList.remove('light-active');
-            themeToggle.querySelector('.theme-dot').textContent = '🌙';
+            UI.controls.theme.classList.remove('light-active');
+            UI.controls.theme.querySelector('.theme-dot').textContent = '🌙';
         }
         localStorage.setItem('swiftqr_theme', light ? 'light' : 'dark');
     }
@@ -163,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('swiftqr_theme');
     applyTheme(savedTheme === 'light');
 
-    themeToggle.addEventListener('click', () => applyTheme(!isLightMode));
+    UI.controls.theme.addEventListener('click', () => applyTheme(!isLightMode));
 
     /* ═══════════════════════════════════════════════
        QR Code Styling Initialization
@@ -178,38 +180,40 @@ document.addEventListener('DOMContentLoaded', () => {
         cornersSquareOptions: { type: 'square', color: '#0f172a' },
         cornersDotOptions: { type: 'dot', color: '#0f172a' }
     });
-    qrCode.append(qrPreviewContainer);
+    qrCode.append(UI.qr.preview);
 
     /* ═══════════════════════════════════════════════
        vCard String Builder
        ═══════════════════════════════════════════════ */
+    function escapeVCard(s) {
+        return (s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    }
+
+    let cachedVCard = '';
     function buildVCardString() {
-        const fn = (vcardFn.value || '').trim();
-        const ln = (vcardLn.value || '').trim();
+        if (activeTab !== 'vcard') return '';
+        const fn = (UI.vcard.fn.value || '').trim();
+        const ln = (UI.vcard.ln.value || '').trim();
         const fullName = [fn, ln].filter(Boolean).join(' ') || 'Contact';
 
         let str = 'BEGIN:VCARD\r\nVERSION:3.0\r\n';
-        str += `N:${ln};${fn};;;\r\n`;
-        str += `FN:${fullName}\r\n`;
+        str += `N:${escapeVCard(ln)};${escapeVCard(fn)};;;\r\n`;
+        str += `FN:${escapeVCard(fullName)}\r\n`;
 
-        if (vcardJob.value.trim())     str += `TITLE:${vcardJob.value.trim()}\r\n`;
-        if (vcardCompany.value.trim()) str += `ORG:${vcardCompany.value.trim()}\r\n`;
-        if (vcardPhone.value.trim())   str += `TEL;TYPE=CELL:${vcardPhone.value.trim()}\r\n`;
-        if (vcardEmail.value.trim())   str += `EMAIL:${vcardEmail.value.trim()}\r\n`;
-        if (vcardWebsite.value.trim()) str += `URL:${vcardWebsite.value.trim()}\r\n`;
+        const fields = [
+            ['TITLE', UI.vcard.job], ['ORG', UI.vcard.org], 
+            ['TEL;TYPE=CELL', UI.vcard.phone], ['EMAIL', UI.vcard.email], ['URL', UI.vcard.web]
+        ];
+        fields.forEach(([key, el]) => { if (el.value.trim()) str += `${key}:${escapeVCard(el.value.trim())}\r\n`; });
 
         // Social Profiles
-        if (vcardLinkedIn.value.trim())  str += `X-SOCIALPROFILE;type=linkedin:${vcardLinkedIn.value.trim()}\r\n`;
-        if (vcardInstagram.value.trim()) str += `X-SOCIALPROFILE;type=instagram:${vcardInstagram.value.trim()}\r\n`;
-        if (vcardWaSocial.value.trim())  str += `X-SOCIALPROFILE;type=whatsapp:${vcardWaSocial.value.trim()}\r\n`;
+        const socials = [['linkedin', UI.vcard.linkedin], ['instagram', UI.vcard.instagram], ['whatsapp', UI.vcard.whatsapp]];
+        socials.forEach(([type, el]) => { if (el.value.trim()) str += `X-SOCIALPROFILE;type=${type}:${escapeVCard(el.value.trim())}\r\n`; });
 
-        // Profile Photo (base64 JPEG)
-        if (profilePhotoBase64) {
-            const b64 = profilePhotoBase64.split(',')[1];
-            str += `PHOTO;ENCODING=b;TYPE=JPEG:${b64}\r\n`;
-        }
+        if (profilePhotoBase64) str += `PHOTO;ENCODING=b;TYPE=JPEG:${profilePhotoBase64.split(',')[1]}\r\n`;
 
         str += 'END:VCARD';
+        cachedVCard = str;
         return str;
     }
 
@@ -236,25 +240,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    profilePhotoUpload.addEventListener('change', async (e) => {
+    UI.vcard.photoUpload.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
         profilePhotoBase64 = await compressImageToJpeg(file);
         // Show in mini preview
-        profileAvatarImg.src = profilePhotoBase64;
-        profileAvatarImg.classList.remove('hidden');
-        profileAvatarPlaceholder.classList.add('hidden');
-        clearProfilePhotoBtn.classList.remove('hidden');
+        UI.vcard.avatarImg.src = profilePhotoBase64;
+        UI.vcard.avatarImg.classList.remove('hidden');
+        UI.vcard.avatarPlaceholder.classList.add('hidden');
+        UI.vcard.clearPhoto.classList.remove('hidden');
         debouncedUpdate();
     });
 
-    clearProfilePhotoBtn.addEventListener('click', () => {
+    UI.vcard.clearPhoto.addEventListener('click', () => {
         profilePhotoBase64 = null;
-        profilePhotoUpload.value = '';
-        profileAvatarImg.classList.add('hidden');
-        profileAvatarImg.src = '';
-        profileAvatarPlaceholder.classList.remove('hidden');
-        clearProfilePhotoBtn.classList.add('hidden');
+        UI.vcard.photoUpload.value = '';
+        UI.vcard.avatarImg.classList.add('hidden');
+        UI.vcard.avatarImg.src = '';
+        UI.vcard.avatarPlaceholder.classList.remove('hidden');
+        UI.vcard.clearPhoto.classList.add('hidden');
         debouncedUpdate();
     });
 
@@ -266,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => {
-                const SIZE = 80;
+                const SIZE = 40; // Smaller sample size for faster processing
                 const canvas = document.createElement('canvas');
                 canvas.width = canvas.height = SIZE;
                 const ctx = canvas.getContext('2d');
@@ -309,16 +313,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    magicWandBtn.addEventListener('click', async () => {
+    UI.controls.styling.magicWand.addEventListener('click', async () => {
         if (!uploadedLogo) return;
-        magicWandBtn.classList.add('extracting');
+        UI.controls.styling.magicWand.classList.add('extracting');
         const { primary, secondary } = await extractPalette(uploadedLogo);
-        magicWandBtn.classList.remove('extracting');
+        UI.controls.styling.magicWand.classList.remove('extracting');
 
-        qrColor1.value = primary;
-        qrColor2.value = secondary;
-        eyeFrameColor.value = primary;
-        eyeDotColor.value = secondary;
+        UI.controls.color.c1.value = primary;
+        UI.controls.color.c2.value = secondary;
+        UI.controls.styling.eyeFrame.value = primary;
+        UI.controls.styling.eyeDot.value = secondary;
 
         // Enable gradient mode to showcase both colors
         modes.qr = 'gradient';
@@ -326,17 +330,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateQRCode();
 
         // Flash button to give success feedback
-        magicWandBtn.style.background = 'rgba(99,102,241,0.35)';
-        setTimeout(() => { magicWandBtn.style.background = ''; }, 800);
+        UI.controls.styling.magicWand.style.background = 'rgba(99,102,241,0.35)';
+        setTimeout(() => { UI.controls.styling.magicWand.style.background = ''; }, 800);
     });
 
     /* ═══════════════════════════════════════════════
        Logo Masking
        ═══════════════════════════════════════════════ */
-    maskBtns.forEach(btn => {
+    UI.controls.styling.maskBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             maskMode = btn.getAttribute('data-mask');
-            maskBtns.forEach(b => b.classList.remove('active-mask'));
+            UI.controls.styling.maskBtns.forEach(b => b.classList.remove('active-mask'));
             btn.classList.add('active-mask');
             updateQRCode();
         });
@@ -345,24 +349,24 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ═══════════════════════════════════════════════
        Logo Upload / Clear
        ═══════════════════════════════════════════════ */
-    logoUpload.addEventListener('change', (e) => {
+    UI.controls.styling.logoUpload.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (ev) => {
             uploadedLogo = ev.target.result;
-            clearLogoBtn.classList.remove('hidden');
-            magicWandBtn.classList.remove('hidden');
+            UI.controls.styling.clearLogo.classList.remove('hidden');
+            UI.controls.styling.magicWand.classList.remove('hidden');
             updateQRCode();
         };
         reader.readAsDataURL(file);
     });
 
-    clearLogoBtn.addEventListener('click', () => {
+    UI.controls.styling.clearLogo.addEventListener('click', () => {
         uploadedLogo = null;
-        logoUpload.value = '';
-        clearLogoBtn.classList.add('hidden');
-        magicWandBtn.classList.add('hidden');
+        UI.controls.styling.logoUpload.value = '';
+        UI.controls.styling.clearLogo.classList.add('hidden');
+        UI.controls.styling.magicWand.classList.add('hidden');
         updateQRCode();
     });
 
@@ -378,31 +382,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         switch (activeTab) {
             case 'url':
-                content = inputUrl.value || 'https://swiftqr.app';
+                content = UI.inputs.url.value || 'https://swiftqr.app';
                 break;
             case 'wifi':
-                content = `WIFI:S:${escapeWiFi(wifiSsid.value)||'SSID'};T:${wifiEnc.value||'WPA'};P:${escapeWiFi(wifiPass.value)};;`;
+                content = `WIFI:S:${escapeWiFi(UI.inputs.wifi.ssid.value)||'SSID'};T:${UI.inputs.wifi.enc.value||'WPA'};P:${escapeWiFi(UI.inputs.wifi.pass.value)};;`;
                 break;
             case 'vcard':
                 content = buildVCardString();
                 break;
             case 'whatsapp':
-                const num = waPhone.value.replace(/\D/g, '');
-                const msg = encodeURIComponent(waMsg.value);
+                const rawNum = UI.inputs.wa.phone.value || '';
+                const num = rawNum.replace(/[^\d]/g, ''); // Extract only digits for wa.me URL
+                const msg = encodeURIComponent(UI.inputs.wa.msg.value);
                 content = num ? `https://wa.me/${num}${msg ? '?text=' + msg : ''}` : 'https://wa.me/';
                 break;
         }
 
         // Dot colour / gradient
-        const dotsOptions = { type: dotStyle.value || 'square' };
+        const dotsOptions = { type: UI.controls.styling.dot.value || 'square' };
         if (modes.qr === 'solid') {
-            dotsOptions.color    = qrColor1.value;
+            dotsOptions.color    = UI.controls.color.c1.value;
             dotsOptions.gradient = null;
         } else {
             dotsOptions.gradient = {
-                type: gradientTypeSelect.value,
-                rotation: (parseInt(qrRotation.value) * Math.PI) / 180,
-                colorStops: [{ offset: 0, color: qrColor1.value }, { offset: 1, color: qrColor2.value }]
+                type: UI.controls.color.gradType.value,
+                rotation: (parseInt(UI.controls.color.rotation.value) * Math.PI) / 180,
+                colorStops: [{ offset: 0, color: UI.controls.color.c1.value }, { offset: 1, color: UI.controls.color.c2.value }]
             };
         }
 
@@ -420,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logo masking — circle/square forces hideBackgroundDots on and adjusts margin
         const hideBackDots = isLogoBgActive || maskMode !== 'overlay';
-        const marginForMask = maskMode !== 'overlay' ? 6 : parseInt(logoMargin.value);
+        const marginForMask = maskMode !== 'overlay' ? 6 : parseInt(UI.controls.styling.logoMargin.value);
 
         qrCode.update({
             data: content,
@@ -433,24 +438,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 margin: marginForMask,
                 imageSize: maskMode !== 'overlay' ? 0.35 : 0.4
             },
-            cornersSquareOptions: { type: cornerSquareType.value, color: eyeFrameColor.value },
-            cornersDotOptions:    { type: cornerDotType.value,   color: eyeDotColor.value }
+            cornersSquareOptions: { type: UI.controls.styling.cornerSq.value, color: UI.controls.styling.eyeFrame.value },
+            cornersDotOptions:    { type: UI.controls.styling.cornerDot.value,   color: UI.controls.styling.eyeDot.value }
         });
 
         // ECC label
         const eccLabels = { H: 'HIGH', Q: 'QUARTILE', M: 'MEDIUM', L: 'LOW' };
-        eccDisplay.textContent = eccLabels[eccLevel] || eccLevel;
+        UI.qr.ecc.textContent = eccLabels[eccLevel] || eccLevel;
 
         // vCard-specific UI updates
         if (activeTab === 'vcard') {
-            vcardBadge.classList.remove('hidden');
-            vcardCounter.textContent = `${content.length}_CHAR`;
-            vcardWarning.classList.toggle('hidden', content.length <= 300);
-            highDensityAlert.classList.toggle('hidden', !profilePhotoBase64);
+            UI.vcard.badge.classList.remove('hidden');
+            UI.vcard.counter.textContent = `${content.length}_CHAR`;
+            UI.vcard.warning.classList.toggle('hidden', content.length <= 300);
+            UI.vcard.alert.classList.toggle('hidden', !profilePhotoBase64);
         } else {
-            vcardBadge.classList.add('hidden');
-            vcardWarning.classList.add('hidden');
-            highDensityAlert.classList.add('hidden');
+            UI.vcard.badge.classList.add('hidden');
+            UI.vcard.warning.classList.add('hidden');
+            UI.vcard.alert.classList.add('hidden');
         }
 
         if (isMockupActive) updateMockupImage();
@@ -469,19 +474,19 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.toggle('hover:bg-white/5', !isActive);
         });
         if (target === 'qr') {
-            qrGradientControls.classList.toggle('hidden', type === 'solid');
-            qrRotationControl.classList.toggle('hidden', type === 'solid');
+            UI.controls.color.gradControls.classList.toggle('hidden', type === 'solid');
+            UI.controls.color.rotControl.classList.toggle('hidden', type === 'solid');
         }
     }
 
-    colorModeBtns.forEach(btn => {
+    UI.controls.color.modes.forEach(btn => {
         btn.addEventListener('click', () => {
             const type   = btn.getAttribute('data-type');
             const target = btn.getAttribute('data-target');
             modes[target] = type;
             updateColorModeUI(target, type);
-            if (accordionContent.style.maxHeight !== '0px') {
-                accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+            if (UI.controls.accordion.content.style.maxHeight !== '0px') {
+                UI.controls.accordion.content.style.maxHeight = UI.controls.accordion.content.scrollHeight + 'px';
             }
             updateQRCode();
         });
@@ -490,26 +495,28 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ═══════════════════════════════════════════════
        Accordion
        ═══════════════════════════════════════════════ */
-    accordionToggle.addEventListener('click', () => {
-        const isOpen = accordionContent.style.maxHeight && accordionContent.style.maxHeight !== '0px';
+    UI.controls.accordion.toggle.addEventListener('click', () => {
+        const isOpen = UI.controls.accordion.content.style.maxHeight && UI.controls.accordion.content.style.maxHeight !== '0px';
         if (isOpen) {
-            accordionContent.style.maxHeight = '0px';
-            accordionIcon.style.transform = 'rotate(0deg)';
+            UI.controls.accordion.content.style.maxHeight = '0px';
+            UI.controls.accordion.icon.style.transform = 'rotate(0deg)';
         } else {
-            accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
-            accordionIcon.style.transform = 'rotate(180deg)';
+            UI.controls.accordion.content.style.maxHeight = UI.controls.accordion.content.scrollHeight + 'px';
+            UI.controls.accordion.icon.style.transform = 'rotate(180deg)';
         }
     });
 
     /* ═══════════════════════════════════════════════
        Sidebar Tab Navigation
        ═══════════════════════════════════════════════ */
-    tabButtons.forEach(btn => {
+    UI.tabs.buttons.forEach(btn => {
         btn.addEventListener('click', () => {
-            activeTab = btn.getAttribute('data-tab');
-            tabButtons.forEach(b => b.classList.remove('active'));
+            const newTab = btn.getAttribute('data-tab');
+            if (newTab === activeTab) return; // FIX: avoid redundant updates
+            activeTab = newTab;
+            UI.tabs.buttons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            tabContents.forEach(c => c.classList.add('hidden'));
+            UI.tabs.contents.forEach(c => c.classList.add('hidden'));
             document.getElementById(`${activeTab}-content`).classList.remove('hidden');
             updateQRCode();
         });
@@ -518,41 +525,42 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ═══════════════════════════════════════════════
        Toggle Controls
        ═══════════════════════════════════════════════ */
-    // Logo background toggle
-    logoBgToggle.addEventListener('click', () => {
+    UI.controls.styling.logoBg.addEventListener('click', () => {
         isLogoBgActive = !isLogoBgActive;
-        logoBgToggle.classList.toggle('active', isLogoBgActive);
+        UI.controls.styling.logoBg.classList.toggle('active', isLogoBgActive);
         updateQRCode();
     });
 
-    // Mockup toggle
-    toggleMockupBtn.addEventListener('click', () => {
+    UI.mockup.toggle.addEventListener('click', () => {
         isMockupActive = !isMockupActive;
-        toggleMockupBtn.classList.toggle('active', isMockupActive);
-        standardView.classList.toggle('hidden', isMockupActive);
-        mockupView.classList.toggle('hidden', !isMockupActive);
+        UI.mockup.toggle.classList.toggle('active', isMockupActive);
+        UI.mockup.standard.classList.toggle('hidden', isMockupActive);
+        UI.mockup.view.classList.toggle('hidden', !isMockupActive);
         if (isMockupActive) updateMockupImage();
     });
 
+    let currentMockupUrl = null;
     async function updateMockupImage() {
         if (!isMockupActive) return;
+        if (currentMockupUrl) URL.revokeObjectURL(currentMockupUrl);
         const blob = await qrCode.getRawData('png');
-        mockupQrImg.src = URL.createObjectURL(blob);
+        currentMockupUrl = URL.createObjectURL(blob);
+        UI.mockup.image.src = currentMockupUrl;
     }
 
     /* ═══════════════════════════════════════════════
        Range Inputs
        ═══════════════════════════════════════════════ */
-    logoMargin.addEventListener('input', () => {
-        logoMarginVal.textContent = `${logoMargin.value}px`;
+    UI.controls.styling.logoMargin.addEventListener('input', () => {
+        UI.controls.styling.logoMarginVal.textContent = `${UI.controls.styling.logoMargin.value}px`;
         debouncedUpdate();
     });
-    qrRotation.addEventListener('input', () => {
-        qrRotationVal.textContent = `${qrRotation.value}°`;
+    UI.controls.color.rotation.addEventListener('input', () => {
+        UI.controls.color.rotationVal.textContent = `${UI.controls.color.rotation.value}°`;
         debouncedUpdate();
     });
-    exportQualitySlider.addEventListener('input', () => {
-        qualityValDisplay.textContent = exportQualitySlider.value;
+    UI.qr.quality.addEventListener('input', () => {
+        UI.qr.qualityVal.textContent = UI.qr.quality.value;
     });
 
     /* ═══════════════════════════════════════════════
@@ -560,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
        ═══════════════════════════════════════════════ */
     function buildInfoCard(rows) {
         // rows = [{label, value, plain?}]
-        const section = document.getElementById('preview-info-section');
+        const section = UI.preview.info;
         section.innerHTML = '';
         if (!rows.length) return;
         const card = document.createElement('div');
@@ -575,8 +583,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function buildSocialCard(socials) {
-        const section = document.getElementById('preview-social-section');
-        const card    = document.getElementById('preview-social-card');
+        const section = UI.preview.socialSection;
+        const card    = UI.preview.socialCard;
         card.innerHTML = '';
         if (!socials.length) { section.style.display = 'none'; return; }
         section.style.display = '';
@@ -589,19 +597,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openContactPreview() {
-        const fn = (vcardFn.value || '').trim();
-        const ln = (vcardLn.value || '').trim();
+        const fn = (UI.vcard.fn.value || '').trim();
+        const ln = (UI.vcard.ln.value || '').trim();
         const fullName = [fn, ln].filter(Boolean).join(' ') || 'No Name';
         const initials = [fn[0], ln[0]].filter(Boolean).join('').toUpperCase() || '?';
 
-        document.getElementById('preview-name').textContent = fullName;
-        document.getElementById('preview-initials').textContent = initials;
+        UI.preview.name.textContent = fullName;
+        UI.preview.initials.textContent = initials;
 
-        const jobParts = [vcardJob.value.trim(), vcardCompany.value.trim()].filter(Boolean);
-        document.getElementById('preview-job-company').textContent = jobParts.join(' · ') || '';
+        const jobParts = [UI.vcard.job.value.trim(), UI.vcard.org.value.trim()].filter(Boolean);
+        UI.preview.jobInfo.textContent = jobParts.join(' · ') || '';
 
         // Avatar
-        const avatarWrap = document.getElementById('preview-avatar-wrap');
+        const avatarWrap = UI.preview.avatarWrap;
         const existingImg = avatarWrap.querySelector('img');
         if (existingImg) existingImg.remove();
 
@@ -609,48 +617,48 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = document.createElement('img');
             img.src = profilePhotoBase64;
             img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-            document.getElementById('preview-initials').style.display = 'none';
+            UI.preview.initials.style.display = 'none';
             avatarWrap.appendChild(img);
         } else {
-            document.getElementById('preview-initials').style.display = '';
+            UI.preview.initials.style.display = '';
         }
 
         // Info rows
         const rows = [];
-        if (vcardPhone.value.trim()) rows.push({ label: 'mobile', value: vcardPhone.value.trim() });
-        if (vcardEmail.value.trim()) rows.push({ label: 'email',  value: vcardEmail.value.trim() });
-        if (vcardWebsite.value.trim()) rows.push({ label: 'url',  value: vcardWebsite.value.trim() });
+        if (UI.vcard.phone.value.trim()) rows.push({ label: 'mobile', value: UI.vcard.phone.value.trim() });
+        if (UI.vcard.email.value.trim()) rows.push({ label: 'email',  value: UI.vcard.email.value.trim() });
+        if (UI.vcard.web.value.trim())   rows.push({ label: 'url',    value: UI.vcard.web.value.trim() });
         buildInfoCard(rows);
 
         // Social rows
         const socials = [];
-        if (vcardLinkedIn.value.trim())  socials.push({ icon: '💼', value: vcardLinkedIn.value.trim() });
-        if (vcardInstagram.value.trim()) socials.push({ icon: '📸', value: vcardInstagram.value.trim() });
-        if (vcardWaSocial.value.trim())  socials.push({ icon: '💬', value: vcardWaSocial.value.trim() });
+        if (UI.vcard.linkedin.value.trim())  socials.push({ icon: '💼', value: UI.vcard.linkedin.value.trim() });
+        if (UI.vcard.instagram.value.trim()) socials.push({ icon: '📸', value: UI.vcard.instagram.value.trim() });
+        if (UI.vcard.whatsapp.value.trim())  socials.push({ icon: '💬', value: UI.vcard.whatsapp.value.trim() });
         buildSocialCard(socials);
 
-        contactPreviewModal.classList.remove('hidden');
-        createIcons();
+        UI.vcard.previewModal.classList.remove('hidden');
     }
 
-    contactPreviewBtn.addEventListener('click', openContactPreview);
-    closePreviewModal.addEventListener('click', () => contactPreviewModal.classList.add('hidden'));
-    contactPreviewModal.addEventListener('click', (e) => {
-        if (e.target === contactPreviewModal) contactPreviewModal.classList.add('hidden');
+    UI.vcard.previewBtn.addEventListener('click', openContactPreview);
+    UI.vcard.closePreview.addEventListener('click', () => UI.vcard.previewModal.classList.add('hidden'));
+    UI.vcard.previewModal.addEventListener('click', (e) => {
+        if (e.target === UI.vcard.previewModal) UI.vcard.previewModal.classList.add('hidden');
     });
 
     /* ═══════════════════════════════════════════════
        Clipboard — Copy Raw PNG
        ═══════════════════════════════════════════════ */
-    copyClipboardBtn.addEventListener('click', async () => {
+    UI.export.copy.addEventListener('click', async () => {
         try {
             const blob = await qrCode.getRawData('png');
             const item = new ClipboardItem({ 'image/png': blob });
             await navigator.clipboard.write([item]);
-            const icon = copyClipboardBtn.innerHTML;
-            copyClipboardBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-            setTimeout(() => { copyClipboardBtn.innerHTML = icon; createIcons(); }, 2000);
-        } catch {
+            const icon = UI.export.copy.innerHTML;
+            UI.export.copy.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+            setTimeout(() => { UI.export.copy.innerHTML = icon; createIcons(); }, 2000);
+        } catch (err) {
+            console.error('Clipboard copy failed:', err);
             alert('Clipboard access requires HTTPS or localhost.');
         }
     });
@@ -658,18 +666,18 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ═══════════════════════════════════════════════
        Downloads
        ═══════════════════════════════════════════════ */
-    downloadPngBtn.addEventListener('click', () => {
+    UI.export.png.addEventListener('click', () => {
         saveToHistory();
-        const q = parseInt(exportQualitySlider.value);
+        const q = parseInt(UI.qr.quality.value);
         qrCode.download({ name: 'swiftqr', extension: 'png', width: q, height: q });
     });
 
-    downloadSvgBtn.addEventListener('click', () => {
+    UI.export.svg.addEventListener('click', () => {
         saveToHistory();
         qrCode.download({ name: 'swiftqr', extension: 'svg' });
     });
 
-    downloadVcfBtn.addEventListener('click', () => {
+    UI.export.vcf.addEventListener('click', () => {
         saveToHistory();
         if (activeTab !== 'vcard') { alert('Switch to the vCard tab first.'); return; }
         const vcfContent = buildVCardString();
@@ -677,7 +685,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
         a.href     = url;
-        a.download = `swiftqr_${vcardFn.value || 'contact'}.vcf`;
+        a.download = `swiftqr_${UI.vcard.fn.value || 'contact'}.vcf`;
         a.click();
         URL.revokeObjectURL(url);
     });
@@ -693,22 +701,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const config = {
                 id: Date.now(), tab: activeTab, thumbnail: reader.result,
                 values: {
-                    url: inputUrl.value,
-                    wifi: { ssid: wifiSsid.value, pass: wifiPass.value, enc: wifiEnc.value },
+                    url: UI.inputs.url.value,
+                    wifi: { ssid: UI.inputs.wifi.ssid.value, pass: UI.inputs.wifi.pass.value, enc: UI.inputs.wifi.enc.value },
                     vcard: {
-                        fn: vcardFn.value, ln: vcardLn.value, job: vcardJob.value,
-                        ph: vcardPhone.value, em: vcardEmail.value, org: vcardCompany.value,
-                        web: vcardWebsite.value, linkedin: vcardLinkedIn.value,
-                        instagram: vcardInstagram.value, wa: vcardWaSocial.value
+                        fn: UI.vcard.fn.value, ln: UI.vcard.ln.value, job: UI.vcard.job.value,
+                        ph: UI.vcard.phone.value, em: UI.vcard.email.value, org: UI.vcard.org.value,
+                        web: UI.vcard.web.value, linkedin: UI.vcard.linkedin.value,
+                        instagram: UI.vcard.instagram.value, wa: UI.vcard.whatsapp.value
                     },
-                    wa: { phone: waPhone.value, msg: waMsg.value }
+                    wa: { phone: UI.inputs.wa.phone.value, msg: UI.inputs.wa.msg.value }
                 },
                 style: {
                     modes: { ...modes }, maskMode,
-                    qr: { c1: qrColor1.value, c2: qrColor2.value, rot: qrRotation.value, gradType: gradientTypeSelect.value },
-                    dot: dotStyle.value, cornerSq: cornerSquareType.value, cornerDot: cornerDotType.value,
-                    eyeFrame: eyeFrameColor.value, eyeDot: eyeDotColor.value,
-                    logo: uploadedLogo, logoBg: isLogoBgActive, logoMargin: logoMargin.value
+                    qr: { c1: UI.controls.color.c1.value, c2: UI.controls.color.c2.value, rot: UI.controls.color.rotation.value, gradType: UI.controls.color.gradType.value },
+                    dot: UI.controls.styling.dot.value, cornerSq: UI.controls.styling.cornerSq.value, cornerDot: UI.controls.styling.cornerDot.value,
+                    eyeFrame: UI.controls.styling.eyeFrame.value, eyeDot: UI.controls.styling.eyeDot.value,
+                    logo: uploadedLogo, logoBg: isLogoBgActive, logoMargin: UI.controls.styling.logoMargin.value
                 }
             };
             history.unshift(config);
@@ -720,9 +728,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderHistory() {
         const history = JSON.parse(localStorage.getItem('swiftqr_history_glass_v3') || '[]');
-        historyContainer.innerHTML = '';
-        if (!history.length) { historyContainer.appendChild(noHistoryMsg); noHistoryMsg.classList.remove('hidden'); return; }
-        noHistoryMsg.classList.add('hidden');
+        UI.history.container.innerHTML = '';
+        if (!history.length) { 
+            UI.history.empty.classList.remove('hidden'); 
+            return; 
+        }
+        UI.history.empty.classList.add('hidden');
         history.forEach(item => {
             const card = document.createElement('div');
             card.className = 'history-item p-6 rounded-[2.5rem] cursor-pointer flex items-center gap-6 group';
@@ -738,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h4 class="text-[10px] font-bold text-white/60 truncate uppercase tracking-widest">${getHistoryLabel(item)}</h4>
                 </div>`;
             card.onclick = () => applyHistory(item);
-            historyContainer.appendChild(card);
+            UI.history.container.appendChild(card);
         });
         createIcons();
     }
@@ -752,42 +763,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyHistory(item) {
-        inputUrl.value         = item.values.url || '';
-        wifiSsid.value         = item.values.wifi.ssid || '';
-        wifiPass.value         = item.values.wifi.pass || '';
-        wifiEnc.value          = item.values.wifi.enc  || 'WPA';
-        vcardFn.value          = item.values.vcard.fn  || '';
-        vcardLn.value          = item.values.vcard.ln  || '';
-        vcardJob.value         = item.values.vcard.job || '';
-        vcardPhone.value       = item.values.vcard.ph  || '';
-        vcardEmail.value       = item.values.vcard.em  || '';
-        vcardCompany.value     = item.values.vcard.org || '';
-        vcardWebsite.value     = item.values.vcard.web || '';
-        vcardLinkedIn.value    = item.values.vcard.linkedin  || '';
-        vcardInstagram.value   = item.values.vcard.instagram || '';
-        vcardWaSocial.value    = item.values.vcard.wa        || '';
-        waPhone.value          = item.values.wa.phone || '';
-        waMsg.value            = item.values.wa.msg   || '';
-        modes.qr               = item.style.modes.qr  || 'solid';
-        qrColor1.value         = item.style.qr.c1;
-        qrColor2.value         = item.style.qr.c2;
-        qrRotation.value       = item.style.qr.rot;
-        dotStyle.value         = item.style.dot;
-        cornerSquareType.value = item.style.cornerSq    || 'square';
-        cornerDotType.value    = item.style.cornerDot   || 'dot';
-        eyeFrameColor.value    = item.style.eyeFrame    || '#0f172a';
-        eyeDotColor.value      = item.style.eyeDot      || '#0f172a';
-        uploadedLogo           = item.style.logo        || null;
-        isLogoBgActive         = item.style.logoBg      || false;
-        logoMargin.value       = item.style.logoMargin  || 10;
-        maskMode               = item.style.maskMode    || 'overlay';
-        gradientTypeSelect.value = item.style.qr.gradType || 'linear';
+        UI.inputs.url.value         = item.values.url || '';
+        UI.inputs.wifi.ssid.value   = item.values.wifi.ssid || '';
+        UI.inputs.wifi.pass.value   = item.values.wifi.pass || '';
+        UI.inputs.wifi.enc.value    = item.values.wifi.enc  || 'WPA';
+        UI.vcard.fn.value          = item.values.vcard.fn  || '';
+        UI.vcard.ln.value          = item.values.vcard.ln  || '';
+        UI.vcard.job.value         = item.values.vcard.job || '';
+        UI.vcard.phone.value       = item.values.vcard.ph  || '';
+        UI.vcard.email.value       = item.values.vcard.em  || '';
+        UI.vcard.org.value         = item.values.vcard.org || '';
+        UI.vcard.web.value         = item.values.vcard.web || '';
+        UI.vcard.linkedin.value    = item.values.vcard.linkedin  || '';
+        UI.vcard.instagram.value   = item.values.vcard.instagram || '';
+        UI.vcard.whatsapp.value    = item.values.vcard.wa        || '';
+        UI.inputs.wa.phone.value   = item.values.wa.phone || '';
+        UI.inputs.wa.msg.value     = item.values.wa.msg   || '';
+        modes.qr                   = item.style.modes.qr  || 'solid';
+        UI.controls.color.c1.value = item.style.qr.c1;
+        UI.controls.color.c2.value = item.style.qr.c2;
+        UI.controls.color.rotation.value = item.style.qr.rot;
+        UI.controls.styling.dot.value = item.style.dot;
+        UI.controls.styling.cornerSq.value = item.style.cornerSq    || 'square';
+        UI.controls.styling.cornerDot.value = item.style.cornerDot   || 'dot';
+        UI.controls.styling.eyeFrame.value = item.style.eyeFrame    || '#0f172a';
+        UI.controls.styling.eyeDot.value = item.style.eyeDot      || '#0f172a';
+        uploadedLogo               = item.style.logo        || null;
+        isLogoBgActive             = item.style.logoBg      || false;
+        UI.controls.styling.logoMargin.value = item.style.logoMargin  || 10;
+        maskMode                   = item.style.maskMode    || 'overlay';
+        UI.controls.color.gradType.value = item.style.qr.gradType || 'linear';
 
         updateColorModeUI('qr', modes.qr);
-        logoBgToggle.classList.toggle('active', isLogoBgActive);
-        clearLogoBtn.classList.toggle('hidden', !uploadedLogo);
-        magicWandBtn.classList.toggle('hidden', !uploadedLogo);
-        maskBtns.forEach(b => { b.classList.toggle('active-mask', b.getAttribute('data-mask') === maskMode); });
+        UI.controls.styling.logoBg.classList.toggle('active', isLogoBgActive);
+        UI.controls.styling.clearLogo.classList.toggle('hidden', !uploadedLogo);
+        UI.controls.styling.magicWand.classList.toggle('hidden', !uploadedLogo);
+        UI.controls.styling.maskBtns.forEach(b => { b.classList.toggle('active-mask', b.getAttribute('data-mask') === maskMode); });
 
         const targetTab = document.querySelector(`[data-tab="${item.tab}"]`);
         if (targetTab) targetTab.click();
@@ -795,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    clearHistoryBtn.addEventListener('click', () => {
+    UI.history.clear.addEventListener('click', () => {
         if (confirm('PURGE_ALL_ARCHIVE_DATA?')) {
             localStorage.removeItem('swiftqr_history_glass_v3');
             renderHistory();
@@ -805,28 +816,41 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ═══════════════════════════════════════════════
        Reset
        ═══════════════════════════════════════════════ */
-    resetBtn.addEventListener('click', () => {
+    UI.export.reset.addEventListener('click', () => {
         if (!confirm('TERMINATE_ALL_DATA_BUFFERS?')) return;
-        [inputUrl, wifiSsid, wifiPass, vcardFn, vcardLn, vcardJob, vcardPhone, vcardEmail,
-         vcardCompany, vcardWebsite, vcardLinkedIn, vcardInstagram, vcardWaSocial, waPhone, waMsg
+        [UI.inputs.url, UI.inputs.wifi.ssid, UI.inputs.wifi.pass, 
+         UI.vcard.fn, UI.vcard.ln, UI.vcard.job, UI.vcard.phone, UI.vcard.email,
+         UI.vcard.org, UI.vcard.web, UI.vcard.linkedin, UI.vcard.instagram, 
+         UI.vcard.whatsapp, UI.inputs.wa.phone, UI.inputs.wa.msg
         ].forEach(el => el.value = '');
-        wifiEnc.value  = 'WPA';
-        qrColor1.value = '#0f172a'; qrColor2.value = '#312e81'; qrRotation.value = '0';
-        eyeFrameColor.value = '#0f172a'; eyeDotColor.value = '#0f172a';
-        dotStyle.value = 'square'; maskMode = 'overlay';
-        modes.qr = 'solid'; uploadedLogo = null; isLogoBgActive = false;
+        
+        UI.inputs.wifi.enc.value  = 'WPA';
+        UI.controls.color.c1.value = '#0f172a'; 
+        UI.controls.color.c2.value = '#312e81'; 
+        UI.controls.color.rotation.value = '0';
+        UI.controls.styling.eyeFrame.value = '#0f172a'; 
+        UI.controls.styling.eyeDot.value = '#0f172a';
+        UI.controls.styling.dot.value = 'square'; 
+        maskMode = 'overlay';
+        modes.qr = 'solid'; 
+        uploadedLogo = null; 
+        isLogoBgActive = false;
         profilePhotoBase64 = null;
-        logoUpload.value = ''; profilePhotoUpload.value = '';
-        clearLogoBtn.classList.add('hidden'); magicWandBtn.classList.add('hidden');
-        clearProfilePhotoBtn.classList.add('hidden');
-        profileAvatarImg.classList.add('hidden'); profileAvatarImg.src = '';
-        profileAvatarPlaceholder.classList.remove('hidden');
-        maskBtns.forEach(b => b.classList.toggle('active-mask', b.getAttribute('data-mask') === 'overlay'));
+        
+        UI.controls.styling.logoUpload.value = ''; 
+        UI.vcard.photoUpload.value = '';
+        UI.controls.styling.clearLogo.classList.add('hidden'); 
+        UI.controls.styling.magicWand.classList.add('hidden');
+        UI.vcard.clearPhoto.classList.add('hidden');
+        UI.vcard.avatarImg.classList.add('hidden'); 
+        UI.vcard.avatarImg.src = '';
+        UI.vcard.avatarPlaceholder.classList.remove('hidden');
+        UI.controls.styling.maskBtns.forEach(b => b.classList.toggle('active-mask', b.getAttribute('data-mask') === 'overlay'));
         updateColorModeUI('qr', 'solid');
-        logoBgToggle.classList.remove('active');
-        vcardCounter.textContent = '0_CHAR';
-        vcardWarning.classList.add('hidden');
-        highDensityAlert.classList.add('hidden');
+        UI.controls.styling.logoBg.classList.remove('active');
+        UI.vcard.counter.textContent = '0_CHAR';
+        UI.vcard.warning.classList.add('hidden');
+        UI.vcard.alert.classList.add('hidden');
         document.querySelector('.tab-btn')?.click();
         updateQRCode();
     });
@@ -835,11 +859,11 @@ document.addEventListener('DOMContentLoaded', () => {
        Input Listeners
        ═══════════════════════════════════════════════ */
     [
-        inputUrl, wifiSsid, wifiPass, wifiEnc,
-        vcardFn, vcardLn, vcardJob, vcardPhone, vcardEmail, vcardCompany, vcardWebsite,
-        vcardLinkedIn, vcardInstagram, vcardWaSocial,
-        waPhone, waMsg, qrColor1, qrColor2, dotStyle,
-        cornerSquareType, cornerDotType, eyeFrameColor, eyeDotColor, logoMargin
+        UI.inputs.url, UI.inputs.wifi.ssid, UI.inputs.wifi.pass, UI.inputs.wifi.enc,
+        UI.vcard.fn, UI.vcard.ln, UI.vcard.job, UI.vcard.phone, UI.vcard.email, UI.vcard.org, UI.vcard.web,
+        UI.vcard.linkedin, UI.vcard.instagram, UI.vcard.whatsapp,
+        UI.inputs.wa.phone, UI.inputs.wa.msg, UI.controls.color.c1, UI.controls.color.c2, UI.controls.styling.dot,
+        UI.controls.styling.cornerSq, UI.controls.styling.cornerDot, UI.controls.styling.eyeFrame, UI.controls.styling.eyeDot, UI.controls.styling.logoMargin
     ].forEach(el => el.addEventListener('input', debouncedUpdate));
 
     /* ═══════════════════════════════════════════════
