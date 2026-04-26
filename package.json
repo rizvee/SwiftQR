@@ -1,0 +1,36 @@
+{
+  "name": "swiftqr",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "<div align=\"center\">\r   <img src=\"icon.svg\" width=\"120\" height=\"120\" alt=\"SwiftQR Logo\" />\r   <br />\r   <p><b>Professional-grade 3D Glassmorphism QR Design Station</b></p>\r   <p><i>Immersive. Advanced. Secure.</i></p>",
+  "main": "app.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rizvee/SwiftQR.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rizvee/SwiftQR/issues"
+  },
+  "homepage": "https://github.com/rizvee/SwiftQR#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "jspdf": "^2.5.1",
+    "jszip": "^3.10.1",
+    "lucide": "^1.11.0",
+    "papaparse": "^5.4.1",
+    "qr-code-styling": "^1.9.2"
+  }
+}

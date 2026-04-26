@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ═══════════════════════════════════════════════
    SwiftQR 3D Studio — Style System v3.0
    ═══════════════════════════════════════════════ */
@@ -30,6 +34,24 @@ html.light {
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── Accessibility Utilities ─── */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+*:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
 
 body {
     -webkit-font-smoothing: antialiased;
@@ -305,9 +327,10 @@ html.light .contact-preview-cta:hover { background:rgba(0,0,0,0.05); border-colo
 .preview-modal-overlay {
     position:fixed; inset:0; z-index:9000;
     background:rgba(0,0,0,0.85); backdrop-filter:blur(30px); -webkit-backdrop-filter:blur(30px);
-    display:flex; align-items:center; justify-content:center;
+    display:none; align-items:center; justify-content:center;
     animation:modal-in 0.35s cubic-bezier(0.22,1,0.36,1);
 }
+.preview-modal-overlay:not(.hidden) { display:flex; }
 @keyframes modal-in { from{opacity:0;transform:scale(0.92);} to{opacity:1;transform:scale(1);} }
 
 /* iPhone 15 Pro Shell */

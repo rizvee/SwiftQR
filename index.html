@@ -6,28 +6,7 @@
     <title>SwiftQR 3D Studio — Advanced QR Design Station</title>
     <meta name="description" content="Generate and style professional 3D Glassmorphism QR codes with custom eyes, logo masking, and vCard social profile embedding.">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        glass: 'rgba(255, 255, 255, 0.03)',
-                        'glass-border': 'rgba(255, 255, 255, 0.08)'
-                    },
-                    borderRadius: {
-                        '4xl': '2rem',
-                        '5xl': '2.5rem'
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- Custom Style -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Main Styles (Tailwind + Custom) -->
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -71,14 +50,19 @@
             
             <div class="flex items-center gap-6">
                 <!-- Theme Toggle -->
-                <div id="theme-toggle" class="theme-switch">
+                <button id="theme-toggle" class="theme-switch" aria-label="Toggle Dark/Light Mode">
                     <div class="theme-dot">🌙</div>
-                </div>
-                
-                <button class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 glass hover:bg-white/10 transition-all">
-                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                    <span class="text-[10px] font-bold text-white/60 tracking-widest uppercase">Live_Station</span>
                 </button>
+                
+                <div class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 glass hover:bg-white/10 transition-all">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-[9px] font-black tracking-widest text-white/40 uppercase">System_Active_v3.0</span>
+                </div>
+
+                <div class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 glass">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-400"></i>
+                    <span class="text-[9px] font-black tracking-widest text-indigo-400 uppercase">Privacy_First_Studio</span>
+                </div>
             </div>
         </header>
 
@@ -87,17 +71,20 @@
             <!-- ─── Left Panel: Navigation & Controls ─── -->
             <aside class="lg:w-24 flex lg:flex-col gap-4 order-2 lg:order-1">
                 <nav class="glass-sidebar flex-1 flex lg:flex-col p-3 rounded-3xl lg:rounded-5xl items-center justify-between lg:justify-start gap-4">
-                    <button class="tab-btn active w-14 h-14 rounded-2xl transition-all" data-tab="url">
+                    <button class="tab-btn active w-14 h-14 rounded-2xl transition-all" data-tab="url" aria-label="Generate URL QR Code">
                         <i data-lucide="link-2" class="w-6 h-6"></i>
                     </button>
-                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="wifi">
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="wifi" aria-label="Generate WiFi QR Code">
                         <i data-lucide="wifi" class="w-6 h-6"></i>
                     </button>
-                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="vcard">
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="vcard" aria-label="Generate vCard Contact QR Code">
                         <i data-lucide="contact" class="w-6 h-6"></i>
                     </button>
-                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="whatsapp">
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="whatsapp" aria-label="Generate WhatsApp QR Code">
                         <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    </button>
+                    <button class="tab-btn w-14 h-14 rounded-2xl transition-all" data-tab="batch" aria-label="Batch Process QR Codes">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
                     </button>
                     <div class="lg:mt-auto hidden lg:block">
                         <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white/5 opacity-50">
@@ -271,11 +258,45 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Batch Content -->
+                    <div id="batch-content" class="tab-content hidden transition-all duration-500">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                                <i data-lucide="layers" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-white tracking-widest uppercase mb-0.5">Batch Processor</h2>
+                                <p class="text-[10px] text-white/40 tracking-wider">Generate multiple QR codes from CSV</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="p-8 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-indigo-500/30 transition-all cursor-pointer" onclick="document.getElementById('batch-upload').click()">
+                                <i data-lucide="file-up" class="w-8 h-8 text-white/20"></i>
+                                <div class="text-center">
+                                    <p class="text-[10px] font-black text-white/60 tracking-widest uppercase mb-1">Drop CSV here or click to upload</p>
+                                    <p class="text-[9px] text-white/20">Format: Name, URL/Data</p>
+                                </div>
+                                <input type="file" id="batch-upload" class="hidden" accept=".csv">
+                            </div>
+                            
+                            <div id="batch-preview" class="hidden space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span id="batch-count" class="text-[10px] font-black text-indigo-400 tracking-widest uppercase">0 ROWS DETECTED</span>
+                                    <button id="run-batch" class="px-4 py-2 bg-indigo-500 rounded-xl text-[9px] font-black text-white uppercase tracking-widest hover:bg-indigo-600 transition-all">Process All</button>
+                                </div>
+                                <div id="batch-list" class="max-h-48 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                                    <!-- CSV rows will appear here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- ─── Styling Accordion ─── -->
                 <div class="glass-card rounded-4xl overflow-hidden mb-6">
-                    <button id="accordion-toggle" class="w-full flex items-center justify-between p-7 hover:bg-white/5 transition-colors">
+                    <button id="accordion-toggle" class="w-full flex items-center justify-between p-7 hover:bg-white/5 transition-colors" aria-expanded="false" aria-controls="accordion-content">
                         <div class="flex items-center gap-4">
                             <div class="p-2 bg-white/5 rounded-lg border border-white/10 glass">
                                 <i data-lucide="swatchbook" class="w-4 h-4 text-white/60"></i>
@@ -506,6 +527,9 @@
                             <button id="download-svg" class="glass-btn secondary h-16 rounded-3xl flex items-center justify-center gap-2 font-black text-[10px] tracking-widest uppercase italic">
                                 <i data-lucide="file-code" class="w-4 h-4"></i> Get_SVG
                             </button>
+                            <button id="download-pdf" class="glass-btn secondary h-16 rounded-3xl flex items-center justify-center gap-2 font-black text-[10px] tracking-widest uppercase italic md:col-span-2">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> Get_Pro_PDF
+                            </button>
                             <button id="download-vcf" class="glass-btn secondary h-16 rounded-3xl flex items-center justify-center gap-2 font-black text-[10px] tracking-widest uppercase italic md:col-span-2">
                                 <i data-lucide="file-user" class="w-4 h-4"></i> Secure_VCard_Export
                             </button>
@@ -516,7 +540,7 @@
                                 <i data-lucide="copy" class="w-4 h-4 text-white/40 group-hover:scale-110 transition-all"></i>
                                 <span class="text-[9px] font-bold text-white/40 uppercase tracking-[0.2em]">Live_Copy</span>
                             </button>
-                            <button id="reset-btn" class="w-14 h-14 rounded-2xl bg-red-500/5 border border-red-500/10 flex items-center justify-center text-red-500/40 hover:bg-red-500/10 hover:text-red-500 transition-all" title="Reset All Settings">
+                            <button id="reset-btn" class="w-14 h-14 rounded-2xl bg-red-500/5 border border-red-500/10 flex items-center justify-center text-red-500/40 hover:bg-red-500/10 hover:text-red-500 transition-all focus-visible:ring-2 focus-visible:ring-red-500" title="Reset All Settings" aria-label="Reset All Settings">
                                 <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -608,12 +632,8 @@
     </div>
 
     <!-- ─── Core Scripts ─── -->
-    <!-- Dependencies -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
-    
     <!-- App Logic -->
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 
     <script>
         // Update time in iPhone preview
