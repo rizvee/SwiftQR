@@ -15,7 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialize Lucide Icons
-    lucide.createIcons({ icons: lucide.icons });
+    lucide.createIcons({ 
+        icons: {
+            ...lucide.icons,
+            // Add any explicitly missing icons if they aren't in the default set
+            Linkedin: lucide.Linkedin,
+            Instagram: lucide.Instagram,
+            Swatchbook: lucide.Swatchbook,
+            Github: lucide.Github
+        }
+    });
 
     /* ═══════════════════════════════════════════════
        Utilities
@@ -25,8 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
     }
 
-    const createIcons = () => { if (window.lucide) lucide.createIcons(); };
-    createIcons();
+    const createIcons = () => { 
+        lucide.createIcons({
+            icons: {
+                ...lucide.icons,
+                Linkedin: lucide.Linkedin,
+                Instagram: lucide.Instagram,
+                Swatchbook: lucide.Swatchbook,
+                Github: lucide.Github
+            }
+        }); 
+    };
 
     /* ─── Validation Helpers ─── */
     const isValidURL = (url) => {
