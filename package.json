@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rizvee/SwiftQR.git"
+    "url": "git+https://github.com/Ssiyam0123/SwiftQR.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rizvee/SwiftQR/issues"
+    "url": "https://github.com/Ssiyam0123/SwiftQR/issues"
   },
-  "homepage": "https://github.com/rizvee/SwiftQR#readme",
+  "homepage": "https://Ssiyam0123.github.io/SwiftQR",
   "devDependencies": {
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",
