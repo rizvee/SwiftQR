@@ -1,3 +1,10 @@
+import * as lucide from 'lucide';
+import './style.css';
+import QRCodeStyling from 'qr-code-styling';
+import { jsPDF } from 'jspdf';
+import Papa from 'papaparse';
+import JSZip from 'jszip';
+
 document.addEventListener('DOMContentLoaded', () => {
 
     /* ═══════════════════════════════════════════════
@@ -7,6 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
         navigator.serviceWorker.register('./sw.js').catch(err => console.debug('Service Worker registration failed:', err));
     }
 
+    // Initialize Lucide Icons
+    lucide.createIcons({ 
+        icons: {
+            ...lucide.icons,
+            // Add any explicitly missing icons if they aren't in the default set
+            Linkedin: lucide.Linkedin,
+            Instagram: lucide.Instagram,
+            Swatchbook: lucide.Swatchbook,
+            Github: lucide.Github
+        }
+    });
+
     /* ═══════════════════════════════════════════════
        Utilities
        ═══════════════════════════════════════════════ */
@@ -15,8 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
     }
 
-    const createIcons = () => { if (window.lucide) lucide.createIcons(); };
-    createIcons();
+    const createIcons = () => { 
+        lucide.createIcons({
+            icons: {
+                ...lucide.icons,
+                Linkedin: lucide.Linkedin,
+                Instagram: lucide.Instagram,
+                Swatchbook: lucide.Swatchbook,
+                Github: lucide.Github
+            }
+        }); 
+    };
+
+    /* ─── Validation Helpers ─── */
+    const isValidURL = (url) => {
+        try { new URL(url); return true; } catch { return false; }
+    };
+    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPhone = (phone) => /^[\d\s\+\-\(\)]{7,}$/.test(phone);
 
     /* ═══════════════════════════════════════════════
        DOM References (Grouped)
@@ -35,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         export: {
             png: document.getElementById('download-png'),
             svg: document.getElementById('download-svg'),
+            pdf: document.getElementById('download-pdf'),
             vcf: document.getElementById('download-vcf'),
             copy: document.getElementById('copy-clipboard'),
             reset: document.getElementById('reset-btn')
@@ -126,6 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 rotControl: document.getElementById('qr-rotation-control')
             },
             theme: document.getElementById('theme-toggle')
+        },
+        batch: {
+            upload: document.getElementById('batch-upload'),
+            preview: document.getElementById('batch-preview'),
+            count: document.getElementById('batch-count'),
+            run: document.getElementById('run-batch'),
+            list: document.getElementById('batch-list')
         }
     };
 
@@ -139,33 +182,30 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMockupActive    = false;
     let maskMode          = 'overlay'; // 'overlay' | 'circle' | 'square'
     let isLightMode       = false;
+    let batchData         = []; // [{name, data}]
 
     const modes = { qr: 'solid' };
 
-    /* ═══════════════════════════════════════════════
-       Theme Initialization
-       ═══════════════════════════════════════════════ */
-    function applyTheme(light) {
+    // ─── Theme Management ───
+    const applyTheme = (light) => {
         isLightMode = light;
-        if (light) {
-            document.documentElement.classList.add('light');
-            document.documentElement.classList.remove('dark');
-            UI.controls.theme.classList.add('light-active');
-            UI.controls.theme.querySelector('.theme-dot').textContent = '☀️';
-        } else {
-            document.documentElement.classList.remove('light');
-            document.documentElement.classList.add('dark');
-            UI.controls.theme.classList.remove('light-active');
-            UI.controls.theme.querySelector('.theme-dot').textContent = '🌙';
-        }
-        localStorage.setItem('swiftqr_theme', light ? 'light' : 'dark');
-    }
+        document.documentElement.classList.toggle('light', light);
+        const dot = UI.controls.theme.querySelector('.theme-dot');
+        if (dot) dot.textContent = light ? '☀️' : '🌙';
+        UI.controls.theme.setAttribute('aria-label', light ? 'Switch to Dark Mode' : 'Switch to Light Mode');
+        try { localStorage.setItem('swiftqr_theme', light ? 'light' : 'dark'); } catch {}
+        updateQRCode();
+    };
 
-    // Load persisted theme
-    const savedTheme = localStorage.getItem('swiftqr_theme');
-    applyTheme(savedTheme === 'light');
+    const initTheme = () => {
+        const savedTheme = localStorage.getItem('swiftqr_theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        const shouldBeLight = savedTheme === 'light' || (!savedTheme && !systemPrefersDark);
+        applyTheme(shouldBeLight);
+    };
 
-    UI.controls.theme.addEventListener('click', () => applyTheme(!isLightMode));
+
 
     /* ═══════════════════════════════════════════════
        QR Code Styling Initialization
@@ -181,6 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
         cornersDotOptions: { type: 'dot', color: '#0f172a' }
     });
     qrCode.append(UI.qr.preview);
+
+    // Theme must init AFTER qrCode so applyTheme -> updateQRCode works
+    initTheme();
+    UI.controls.theme.addEventListener('click', () => applyTheme(!isLightMode));
 
     /* ═══════════════════════════════════════════════
        vCard String Builder
@@ -378,6 +422,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateQRCode() {
+        // ─── Input Validation ───
+        const urlVal = UI.inputs.url.value.trim();
+        const urlValid = !urlVal || isValidURL(urlVal);
+        UI.inputs.url.classList.toggle('border-red-500/50', activeTab === 'url' && !urlValid);
+
+        const emailVal = UI.vcard.email.value.trim();
+        const phoneVal = UI.vcard.phone.value.trim();
+        const emailValid = !emailVal || isValidEmail(emailVal);
+        const phoneValid = !phoneVal || isValidPhone(phoneVal);
+        UI.vcard.email.classList.toggle('border-red-500/50', activeTab === 'vcard' && !emailValid);
+        UI.vcard.phone.classList.toggle('border-red-500/50', activeTab === 'vcard' && !phoneValid);
+
+        // Only block generation for URL tab with an invalid URL
+        if (activeTab === 'url' && !urlValid) return;
+
         let content = '';
 
         switch (activeTab) {
@@ -690,6 +749,126 @@ document.addEventListener('DOMContentLoaded', () => {
         URL.revokeObjectURL(url);
     });
 
+    UI.export.pdf.addEventListener('click', async () => {
+        try {
+            saveToHistory();
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const blob = await qrCode.getRawData('png');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imgData = e.target.result;
+                const size = 120;
+                const x = (210 - size) / 2;
+                const y = (297 - size) / 2;
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, 210, 297, 'F');
+                doc.addImage(imgData, 'PNG', x, y, size, size);
+                doc.setFontSize(10);
+                doc.setTextColor(150, 150, 150);
+                doc.text('GENERATED BY SWIFTQR 3D STUDIO', 105, y + size + 20, { align: 'center' });
+                doc.save('swiftqr_pro_export.pdf');
+            };
+            reader.readAsDataURL(blob);
+        } catch (err) {
+            console.error('PDF export failed:', err);
+            alert('Failed to generate PDF. Please try again.');
+        }
+    });
+
+    /* ═══════════════════════════════════════════════
+       Batch Processing Logic
+       ═══════════════════════════════════════════════ */
+    UI.batch.upload.addEventListener('change', (e) => {
+        try {
+            const file = e.target.files[0];
+            if (!file) return;
+            Papa.parse(file, {
+                complete: (results) => {
+                    batchData = results.data
+                        .filter(row => row.length >= 2 && row[1].trim())
+                        .map(row => ({ name: row[0].trim(), data: row[1].trim() }));
+                    renderBatchPreview();
+                },
+                error: (err) => {
+                    console.error('Batch parse error:', err);
+                    alert('Failed to parse CSV batch file.');
+                },
+                header: false,
+                skipEmptyLines: true
+            });
+        } catch (ex) {
+            console.error('Batch upload exception:', ex);
+            alert('An error occurred while processing the batch file.');
+        }
+    });
+
+    function renderBatchPreview() {
+        UI.batch.list.innerHTML = '';
+        if (batchData.length === 0) {
+            UI.batch.preview.classList.add('hidden');
+            return;
+        }
+        
+        UI.batch.preview.classList.remove('hidden');
+        UI.batch.count.textContent = `${batchData.length} ROWS DETECTED`;
+        
+        batchData.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl';
+            row.innerHTML = `
+                <div class="min-w-0 flex-1">
+                    <p class="text-[10px] font-bold text-white truncate uppercase tracking-widest">${item.name || 'Untitled'}</p>
+                    <p class="text-[9px] text-white/30 truncate">${item.data}</p>
+                </div>
+                <button class="delete-batch-row p-2 text-white/20 hover:text-red-400 transition-colors" data-index="${index}">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+            `;
+            UI.batch.list.appendChild(row);
+        });
+        createIcons();
+        
+        // Add delete listeners
+        UI.batch.list.querySelectorAll('.delete-batch-row').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.getAttribute('data-index'));
+                batchData.splice(idx, 1);
+                renderBatchPreview();
+            });
+        });
+    }
+
+    UI.batch.run.addEventListener('click', async () => {
+        if (batchData.length === 0) return;
+        const originalText = UI.batch.run.textContent;
+        UI.batch.run.disabled = true;
+        UI.batch.run.textContent = 'Processing...';
+        try {
+            const zip = new JSZip();
+            const folder = zip.folder('swiftqr_batch');
+            for (let i = 0; i < batchData.length; i++) {
+                const item = batchData[i];
+                UI.batch.run.textContent = `Processing (${i + 1}/${batchData.length})`;
+                qrCode.update({ data: item.data });
+                const blob = await qrCode.getRawData('png');
+                folder.file(`${item.name || 'qr'}_${i}.png`, blob);
+            }
+            updateQRCode();
+            const content = await zip.generateAsync({ type: 'blob' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(content);
+            a.download = 'swiftqr_batch_export.zip';
+            a.click();
+        } catch (err) {
+            console.error('Batch export failed:', err);
+            alert('Batch export failed. Please try again.');
+            updateQRCode();
+        } finally {
+            UI.batch.run.disabled = false;
+            UI.batch.run.textContent = originalText;
+        }
+    });
+
     /* ═══════════════════════════════════════════════
        History
        ═══════════════════════════════════════════════ */
@@ -865,6 +1044,16 @@ document.addEventListener('DOMContentLoaded', () => {
         UI.inputs.wa.phone, UI.inputs.wa.msg, UI.controls.color.c1, UI.controls.color.c2, UI.controls.styling.dot,
         UI.controls.styling.cornerSq, UI.controls.styling.cornerDot, UI.controls.styling.eyeFrame, UI.controls.styling.eyeDot, UI.controls.styling.logoMargin
     ].forEach(el => el.addEventListener('input', debouncedUpdate));
+
+    /* ═══════════════════════════════════════════════
+       Global Error Handlers
+       ═══════════════════════════════════════════════ */
+    window.addEventListener('error', (e) => {
+        console.error('[SwiftQR] Uncaught error:', e.error || e.message);
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+        console.error('[SwiftQR] Unhandled promise rejection:', e.reason);
+    });
 
     /* ═══════════════════════════════════════════════
        Initial Render
